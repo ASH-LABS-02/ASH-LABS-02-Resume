@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" fill="none">
+<defs>
+  <radialGradient id="bg"><stop stop-color="#153b40"/><stop offset="1" stop-color="#091318"/></radialGradient>
+  <linearGradient id="top" x1="400" y1="290" x2="750" y2="560" gradientUnits="userSpaceOnUse"><stop stop-color="#284a54"/><stop offset="1" stop-color="#101e2a"/></linearGradient>
+  <linearGradient id="side" x1="600" y1="420" x2="600" y2="610" gradientUnits="userSpaceOnUse"><stop stop-color="#264552"/><stop offset="1" stop-color="#0b1420"/></linearGradient>
+  <linearGradient id="light"><stop stop-color="#74e9e5" stop-opacity="0"/><stop offset=".5" stop-color="#74e9e5"/><stop offset="1" stop-color="#74e9e5" stop-opacity="0"/></linearGradient>
+  <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M50 0H0V50" stroke="#74e9e5" stroke-opacity=".05"/></pattern>
+  <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="1200" height="800" fill="url(#bg)"/><rect width="1200" height="800" fill="url(#grid)"/>
+<g font-family="Arial, sans-serif"><text x="65" y="64" fill="#7d9fa9" font-size="18" letter-spacing="4">HARDWARE / INTELLIGENCE</text><text x="65" y="160" fill="#efffff" font-size="82" font-weight="700" letter-spacing="-4">VacX</text><text x="67" y="200" fill="#9db4bc" font-size="23">An autonomous clean. A connected system.</text>
+<rect x="865" y="46" width="270" height="48" rx="24" stroke="#74e9e5" stroke-opacity=".3" fill="#74e9e5" fill-opacity=".06"/><circle cx="891" cy="70" r="5" fill="#74e9e5"/><text x="909" y="77" fill="#a5f7ee" font-size="18">ATOMQUEST ’25 SEMIFINALIST</text>
+<ellipse cx="600" cy="549" rx="340" ry="154" stroke="#74e9e5" stroke-opacity=".1"/><ellipse cx="600" cy="549" rx="298" ry="133" stroke="#74e9e5" stroke-opacity=".24" stroke-dasharray="5 14"/>
+<ellipse cx="600" cy="564" rx="235" ry="98" fill="#000" fill-opacity=".35"/>
+<g stroke="#4c8b96" stroke-width="4"><path d="m396 515-49 26m49-26-13 53m13-53-54-10M804 515l49 26m-49-26 13 53m-13-53 54-10"/></g>
+<path d="M376 410v86c0 76 100 127 224 127s224-51 224-127v-86Z" fill="url(#side)" stroke="#55818d" stroke-width="2"/>
+<ellipse cx="600" cy="413" rx="224" ry="127" fill="url(#top)" stroke="#78b8c1" stroke-width="2"/>
+<ellipse cx="600" cy="413" rx="192" ry="102" stroke="#74e9e5" stroke-opacity=".25"/>
+<path d="M388 462c55 89 358 97 425 0" stroke="#74e9e5" stroke-width="5" filter="url(#glow)"/><path d="M388 462c55 89 358 97 425 0" stroke="url(#light)" stroke-width="3"/>
+<path d="M513 391v32c0 29 174 29 174 0v-32" fill="#172631" stroke="#4b7483" stroke-width="2"/><ellipse cx="600" cy="391" rx="87" ry="43" fill="#2b4a55" stroke="#6598a4" stroke-width="2"/>
+<path d="m560 369 40-23 40 23v43l-40 23-40-23Z" fill="#0c202a" stroke="#609eab" stroke-width="2"/><path d="m560 369 40 23 40-23m-40 23v43" stroke="#609eab" stroke-width="2"/>
+<ellipse cx="610" cy="405" rx="13" ry="17" transform="rotate(30 610 405)" fill="#74e9e5" fill-opacity=".15" stroke="#74e9e5" stroke-width="2"/><circle cx="610" cy="405" r="5" fill="#c4fffc"/>
+<g fill="#0b131b" stroke="#72abb5" stroke-width="2"><ellipse cx="536" cy="559" rx="22" ry="14"/><ellipse cx="586" cy="568" rx="22" ry="14"/></g><path d="m664 546 56-13m-53 22 55-13m-52 22 53-13" stroke="#537782" stroke-width="3"/>
+<g stroke="#75b7c2" stroke-opacity=".6"><path d="M613 354V279h158"/><path d="M441 416H290v-70H132"/><path d="M562 567v85H370"/></g>
+<g fill="#74e9e5"><circle cx="613" cy="354" r="4"/><circle cx="441" cy="416" r="4"/><circle cx="562" cy="567" r="4"/></g>
+<text x="782" y="277" fill="#d5f6f7" font-size="23">ESP32-CAM</text><text x="132" y="323" fill="#d5f6f7" font-size="23">Sensor-led navigation</text><text x="132" y="352" fill="#8eacb6" font-size="17">ULTRASONIC + IR</text><text x="169" y="657" fill="#d5f6f7" font-size="22">Dual-brush cleaning</text>
+<path d="M65 726h1070" stroke="#36515d"/><text x="65" y="768" fill="#89a6b1" font-size="18" letter-spacing="2">AUTONOMOUS + MANUAL</text><text x="498" y="768" fill="#89a6b1" font-size="18" letter-spacing="2">WI-FI CONTROL</text><text x="895" y="768" fill="#89a6b1" font-size="18" letter-spacing="2">SYSTEM ILLUSTRATION</text></g>
+</svg>

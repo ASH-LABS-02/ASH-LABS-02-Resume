@@ -1,0 +1,14 @@
+.assembling-preview { position: relative; transform-style: preserve-3d; }
+.assembling-preview > img { display: block; border-radius: inherit; }
+.assembly-tiles { position: absolute; inset: 0; visibility: hidden; pointer-events: none; transform-style: preserve-3d; }
+.assembly-tile { position: absolute; left: calc(var(--tile-column) * 25%); top: calc(var(--tile-row) * 100% / 3); width: 25%; height: calc(100% / 3); background-size: 400% 300%; background-repeat: no-repeat; backface-visibility: hidden; pointer-events: none; }
+.assembling-preview[data-assembly='assembling'] { overflow: visible; }
+.assembling-preview[data-assembly='assembling'] > img { opacity: 0; }
+.assembling-preview[data-assembly='assembling'] .assembly-tiles { visibility: visible; }
+.assembling-preview[data-assembly='assembling'] .assembly-tile { will-change: transform, opacity; box-shadow: 0 0 0 1px #74e9e521, 0 9px 20px #0005; }
+@media (prefers-reduced-motion: reduce) {
+  .assembling-preview[data-assembly='assembling'] > img { opacity: 1; }
+  .assembling-preview .assembly-tiles { display: none; }
+}
+html[data-motion='off'] .assembling-preview > img { opacity: 1; }
+html[data-motion='off'] .assembly-tiles { display: none; }

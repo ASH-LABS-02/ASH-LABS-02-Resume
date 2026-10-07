@@ -1,0 +1,526 @@
+<title>Offline Mesh Relay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#05090f; --panel:#0b111c; --panel-2:#0f1725;
+  --line:#1b2942; --line-soft:#14203280;
+  --ink:#e4ecf8; --ink-2:#8fa3c0; --ink-3:#5a6d8a;
+  --cyan:#32e2d0; --red:#ff3d57; --amber:#f5a524; --blue:#4a90e2;
+  --ui:"Chakra Petch","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--ui);overflow:hidden;font-size:14px;-webkit-font-smoothing:antialiased}
+
+.wrap{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:8px}
+
+/* header */
+.hdr{display:flex;align-items:center;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.hdr>div{background:var(--panel);display:flex;align-items:center;height:100%}
+.hb{padding:11px 16px;gap:12px}
+.mark{width:30px;height:30px;flex:none;border:1.5px solid var(--cyan);border-radius:50%;display:grid;place-items:center;position:relative}
+.mark::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--cyan);opacity:.25;animation:ping 2.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(.85);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+.mark svg{width:16px;height:16px;stroke:var(--cyan);fill:none;stroke-width:1.6}
+.brand-t{font-size:16px;font-weight:700;letter-spacing:.14em;line-height:1.1}
+.brand-s{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.1em;margin-top:2px}
+.htitle{padding:11px 20px;flex-direction:column;align-items:flex-start;gap:3px;flex:1}
+.htitle .lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-3)}
+.htitle .val{font-size:14px;font-weight:600;letter-spacing:.03em}
+.hstat{padding:11px 18px;flex-direction:column;align-items:flex-start;gap:3px;min-width:98px}
+.hstat .lab{font-family:var(--mono);font-size:9px;letter-spacing:.15em;color:var(--ink-3);white-space:nowrap}
+.hstat .num{font-family:var(--mono);font-size:20px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.cy{color:var(--cyan)}.am{color:var(--amber)}.rd{color:var(--red)}
+
+.no-wan{padding:0 18px!important;gap:12px;background:linear-gradient(180deg,#1a0f14,#12090d)!important}
+.no-wan svg{width:22px;height:22px;stroke:var(--amber);fill:none;stroke-width:1.5;flex:none}
+.no-wan b{display:block;font-size:12.5px;font-weight:700;letter-spacing:.13em;color:var(--amber);line-height:1.15}
+.no-wan span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:#a5734b}
+
+/* body */
+.main{display:grid;grid-template-columns:1fr 330px;gap:8px;min-height:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#111a29,#0c1420);flex:none}
+.ph h2{font-size:10.5px;font-weight:600;letter-spacing:.19em;color:var(--ink-2);text-transform:uppercase}
+.ph .tag{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.08em}
+
+.stage{position:relative;flex:1;min-height:0;background:radial-gradient(ellipse at 62% 46%,#0a1420,#060b12 72%);overflow:hidden}
+#net{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+.stage-cap{
+  position:absolute;left:16px;bottom:16px;z-index:5;max-width:330px;
+  background:#080d16e8;border:1px solid var(--line);border-left:2px solid var(--cyan);
+  border-radius:3px;padding:11px 14px;backdrop-filter:blur(3px);
+}
+.stage-cap b{display:block;font-size:12px;letter-spacing:.1em;color:var(--cyan);margin-bottom:5px}
+.stage-cap p{font-size:11.5px;line-height:1.55;color:var(--ink-2)}
+.legend{position:absolute;right:16px;top:16px;z-index:5;display:flex;flex-direction:column;gap:6px;
+  background:#080d16d8;border:1px solid var(--line);border-radius:3px;padding:10px 12px;backdrop-filter:blur(3px)}
+.lg{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;color:var(--ink-2);letter-spacing:.06em}
+.lg i{width:16px;height:2px;flex:none;display:block}
+.lg u{width:9px;height:9px;flex:none;display:block;border-radius:50%;text-decoration:none}
+
+/* side */
+.side{display:flex;flex-direction:column;gap:8px;min-height:0}
+.side .panel.log{flex:1}
+.pbody{padding:0;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#22334d transparent}
+.pbody::-webkit-scrollbar{width:6px}
+.pbody::-webkit-scrollbar-thumb{background:#22334d;border-radius:3px}
+
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px}
+thead th{
+  text-align:left;padding:7px 10px;color:var(--ink-3);font-weight:500;letter-spacing:.13em;font-size:8.5px;
+  border-bottom:1px solid var(--line);background:#0d1522;position:sticky;top:0;
+}
+tbody td{padding:7px 10px;border-bottom:1px solid var(--line-soft);color:var(--ink-2);font-variant-numeric:tabular-nums}
+tbody tr.down td{color:#4a3a45}
+tbody td b{color:var(--ink);font-weight:500}
+tbody td .hopchain{color:var(--cyan)}
+tbody tr.down td .hopchain{color:var(--red)}
+.badge{font-size:8px;letter-spacing:.1em;padding:1.5px 5px;border-radius:2px;border:1px solid}
+.badge.ok{color:var(--cyan);border-color:#32e2d044;background:#32e2d010}
+.badge.no{color:var(--red);border-color:#ff3d5744;background:#ff3d5710}
+
+.ev{display:grid;grid-template-columns:2px 1fr;border-bottom:1px solid var(--line-soft);animation:sl .4s cubic-bezier(.2,.9,.3,1) both}
+@keyframes sl{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.ev-b{background:var(--ink-3)}
+.ev-i{padding:7px 11px 8px;min-width:0}
+.ev-t{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.ev-k{font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.12em;padding:1.5px 5px;border-radius:2px}
+.ev-time{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+.ev-m{font-size:11.5px;line-height:1.45}
+.ev-r{font-family:var(--mono);font-size:9px;color:var(--cyan);margin-top:4px;letter-spacing:.05em}
+.ev.err .ev-b{background:var(--red)} .ev.err .ev-k{background:#ff3d5720;color:var(--red)} .ev.err .ev-r{color:var(--red)}
+.ev.warn .ev-b{background:var(--amber)} .ev.warn .ev-k{background:#f5a52420;color:var(--amber)} .ev.warn .ev-r{color:var(--amber)}
+.ev.ok .ev-b{background:var(--cyan)} .ev.ok .ev-k{background:#32e2d020;color:var(--cyan)}
+.ev.info .ev-b{background:var(--blue)} .ev.info .ev-k{background:#4a90e220;color:var(--blue)} .ev.info .ev-r{color:var(--blue)}
+
+/* footer explainer */
+.foot{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:8px}
+.fcard{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 14px;display:flex;gap:11px;align-items:flex-start}
+.fcard .ic{width:26px;height:26px;flex:none;border:1px solid var(--cyan);border-radius:2px;display:grid;place-items:center;margin-top:1px}
+.fcard .ic svg{width:15px;height:15px;stroke:var(--cyan);fill:none;stroke-width:1.5}
+.fcard b{display:block;font-size:11.5px;font-weight:600;letter-spacing:.07em;margin-bottom:3px}
+.fcard p{font-size:10.5px;line-height:1.5;color:var(--ink-3)}
+.fspec{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 16px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:206px}
+.fspec div{display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em}
+.fspec div b{color:var(--cyan);font-weight:500}
+
+/* svg */
+.link{stroke:#1f4d5c;stroke-width:1.4}
+.link.live{stroke:#32e2d0;stroke-width:1.5;stroke-dasharray:6 6;opacity:.55;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.link.dead{stroke:#4a2230;stroke-dasharray:3 6;opacity:.5;animation:none}
+.link.route{stroke:#32e2d0;stroke-width:3;opacity:.22;stroke-linecap:round}
+.node-lab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;fill:#e4ecf8}
+.node-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;fill:#5a6d8a}
+.rssi-lab{font-family:var(--mono);font-size:8px;letter-spacing:.05em;fill:#3f6b78}
+.rotor{animation:spin .32s linear infinite;transform-origin:center;transform-box:fill-box}
+@keyframes spin{to{transform:rotate(360deg)}}
+.halo{animation:halo 3s ease-out infinite}
+@keyframes halo{0%{r:26;opacity:.5}100%{r:62;opacity:0}}
+.pkt-chip{font-family:var(--mono);font-size:9px;letter-spacing:.04em}
+.nodeflash{animation:nf .5s ease-out}
+@keyframes nf{0%{opacity:.9;r:26}100%{opacity:0;r:46}}
+
+@media (prefers-reduced-motion:reduce){
+  .link.live,.rotor,.halo,.mark::after{animation:none}
+  .ev{animation-duration:.01s}
+}
+</style>
+
+<div class="wrap">
+
+  <header class="hdr">
+    <div class="hb">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4.5"/></svg></div>
+      <div><div class="brand-t">SANJEEVANI</div><div class="brand-s">LoRa MESH RELAY · 865 MHz ISM</div></div>
+    </div>
+    <div class="htitle">
+      <div class="lab">NETWORK VIEW</div>
+      <div class="val">Multi-Drone Store-and-Forward Mesh — Op Chamoli-7</div>
+    </div>
+    <div class="hstat"><div class="lab">NODES UP</div><div class="num cy" id="sNodes">5/5</div></div>
+    <div class="hstat"><div class="lab">LINKS</div><div class="num cy" id="sLinks">6</div></div>
+    <div class="hstat"><div class="lab">DELIVERED</div><div class="num" id="sDeliv">0</div></div>
+    <div class="hstat"><div class="lab">BUFFERED</div><div class="num am" id="sBuf">0</div></div>
+    <div class="no-wan">
+      <svg viewBox="0 0 24 24"><path d="M2 8.8a16 16 0 0 1 20 0M5.5 12.4a11 11 0 0 1 13 0M9 16a6 6 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.1" fill="currentColor" stroke="none"/><path d="M3 3l18 18" stroke="#ff3d57"/></svg>
+      <div><b>NO INTERNET REQUIRED</b><span>ZERO CELL · ZERO SATCOM · PEER-TO-PEER ONLY</span></div>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="panel">
+      <div class="ph">
+        <h2>Mesh Topology — Live</h2>
+        <span class="tag">DIJKSTRA SHORTEST-PATH · RECOMPUTED ON LINK CHANGE</span>
+      </div>
+      <div class="stage">
+        <svg id="net" viewBox="0 0 1060 640" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="3" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="bigglow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g id="gGrid"></g>
+          <g id="gRoute"></g>
+          <g id="gLinks"></g>
+          <g id="gRssi"></g>
+          <g id="gNodes"></g>
+          <g id="gPkts"></g>
+        </svg>
+
+        <div class="legend">
+          <div class="lg"><i style="background:#32e2d0"></i>ACTIVE LoRa LINK</div>
+          <div class="lg"><i style="background:#4a2230"></i>LINK DOWN</div>
+          <div class="lg"><u style="background:#32e2d0;box-shadow:0 0 6px #32e2d0"></u>DRONE NODE (ROUTER)</div>
+          <div class="lg"><u style="background:#f5a524;box-shadow:0 0 6px #f5a524"></u>GROUND STATION</div>
+          <div class="lg"><u style="background:#eafffb"></u>DATA PACKET IN FLIGHT</div>
+        </div>
+
+        <div class="stage-cap">
+          <b>EVERY DRONE IS A ROUTER</b>
+          <p>Each airframe carries a LoRa radio and forwards its neighbours' traffic. A detection made 4&nbsp;km beyond radio range of the ground station still arrives — it simply hops drone-to-drone until it reaches one that can hear base.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="panel">
+        <div class="ph"><h2>Routing Table</h2><span class="tag">DEST: GS</span></div>
+        <div class="pbody">
+          <table>
+            <thead><tr><th>NODE</th><th>PATH TO GROUND</th><th>HOPS</th><th>LINK</th></tr></thead>
+            <tbody id="rt"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel log">
+        <div class="ph"><h2>Network Log</h2><span class="tag"><span id="evN">0</span> EVENTS</span></div>
+        <div class="pbody" id="log"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="fcard">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2.2"/><circle cx="20" cy="5" r="2.2"/><circle cx="4" cy="19" r="2.2"/><circle cx="20" cy="19" r="2.2"/><path d="M6 6.5l3.8 3.8M18 6.5l-3.8 3.8M6 17.5l3.8-3.8M18 17.5l-3.8-3.8"/></svg></div>
+      <div><b>PEER-TO-PEER, NOT TOWER-TO-PHONE</b><p>No cell tower, no satellite subscription, no ground infrastructure. Drones form the network the moment they power on.</p></div>
+    </div>
+    <div class="fcard">
+      <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><path d="M7 7h.01M7 17h.01"/></svg></div>
+      <div><b>STORE AND FORWARD</b><p>If no route exists, a node holds the payload in flash and re-transmits the instant a neighbour reappears. Detections are never lost — only delayed.</p></div>
+    </div>
+    <div class="fcard">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v5h-5"/></svg></div>
+      <div><b>SELF-HEALING ROUTES</b><p>Losing a node does not partition the swarm. Neighbours detect the dead link within one beacon interval and re-run shortest-path around it.</p></div>
+    </div>
+    <div class="fspec">
+      <div><span>RADIO</span><b>SX1276 · 865 MHz</b></div>
+      <div><span>LINK BUDGET</span><b>~4 km LOS</b></div>
+      <div><span>AIR RATE</span><b>SF9 / 5.4 kbps</b></div>
+      <div><span>BEACON</span><b>2 s HELLO</b></div>
+      <div><span>PAYLOAD</span><b>CBOR, &lt;220 B</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), NS="http://www.w3.org/2000/svg";
+const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const R=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const pad=n=>String(n).padStart(2,"0");
+const stamp=()=>{const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());};
+
+/* ═══ topology ═══ */
+const N={
+  D4:{x:170,y:150,nm:"GARUD-04",sub:"FWD SCOUT · GRID A-1",kind:"drone",up:true},
+  D3:{x:610,y:150,nm:"GARUD-03",sub:"RIDGE RELAY · GRID E-1",kind:"drone",up:true},
+  D2:{x:400,y:340,nm:"GARUD-02",sub:"SEARCH · GRID C-3",kind:"drone",up:true},
+  D1:{x:660,y:430,nm:"GARUD-01",sub:"SEARCH · GRID F-4",kind:"drone",up:true},
+  GS:{x:930,y:530,nm:"GROUND STN",sub:"NDRF FWD BASE",kind:"base",up:true}
+};
+const L=[["D4","D2"],["D4","D3"],["D2","D3"],["D2","D1"],["D3","D1"],["D1","GS"]];
+const dead=new Set();
+const dist=(a,b)=>Math.hypot(N[a].x-N[b].x,N[a].y-N[b].y);
+const linkUp=(a,b)=>!dead.has(a)&&!dead.has(b);
+
+/* Dijkstra to GS over live links */
+function routeTo(src,dst){
+  if(dead.has(src)||dead.has(dst)) return null;
+  const D={},P={},Q=new Set(Object.keys(N).filter(k=>!dead.has(k)));
+  Q.forEach(k=>D[k]=Infinity); D[src]=0;
+  while(Q.size){
+    let u=null,best=Infinity;
+    Q.forEach(k=>{if(D[k]<best){best=D[k];u=k;}});
+    if(u===null) break;
+    Q.delete(u);
+    if(u===dst) break;
+    L.forEach(([a,b])=>{
+      if(!linkUp(a,b)) return;
+      let v=null;
+      if(a===u) v=b; else if(b===u) v=a; else return;
+      if(!Q.has(v)) return;
+      const alt=D[u]+dist(a,b);
+      if(alt<D[v]){D[v]=alt;P[v]=u;}
+    });
+  }
+  if(D[dst]===Infinity) return null;
+  const path=[dst]; let c=dst;
+  while(P[c]!==undefined){c=P[c];path.unshift(c);}
+  return path[0]===src?path:null;
+}
+
+/* ═══ background grid ═══ */
+(function(){
+  const g=$("#gGrid");
+  for(let x=0;x<=1060;x+=53) g.appendChild(el("line",{x1:x,y1:0,x2:x,y2:640,stroke:"#101b2c","stroke-width":".6"}));
+  for(let y=0;y<=640;y+=53) g.appendChild(el("line",{x1:0,y1:y,x2:1060,y2:y,stroke:"#101b2c","stroke-width":".6"}));
+})();
+
+/* ═══ links ═══ */
+const linkEls={},rssiEls={},routeEls={};
+L.forEach(([a,b])=>{
+  const k=a+"-"+b;
+  routeEls[k]=el("line",{x1:N[a].x,y1:N[a].y,x2:N[b].x,y2:N[b].y,class:"link route",opacity:"0"});
+  $("#gRoute").appendChild(routeEls[k]);
+  linkEls[k]=el("line",{x1:N[a].x,y1:N[a].y,x2:N[b].x,y2:N[b].y,class:"link live"});
+  $("#gLinks").appendChild(linkEls[k]);
+  const mx=(N[a].x+N[b].x)/2, my=(N[a].y+N[b].y)/2;
+  const t=el("text",{x:mx,y:my-6,class:"rssi-lab","text-anchor":"middle"});
+  t.textContent="-"+Math.round(R(58,84))+" dBm";
+  rssiEls[k]=t; $("#gRssi").appendChild(t);
+});
+
+/* ═══ nodes ═══ */
+const nodeEls={};
+Object.keys(N).forEach(id=>{
+  const n=N[id], col=n.kind==="base"?"#f5a524":"#32e2d0";
+  const g=el("g",{transform:`translate(${n.x},${n.y})`});
+
+  g.appendChild(el("circle",{r:26,fill:"none",stroke:col,"stroke-width":"1",opacity:".4",class:"halo"}));
+  const flash=el("circle",{r:26,fill:"none",stroke:"#eafffb","stroke-width":"1.6",opacity:"0"});
+  g.appendChild(flash);
+  g.appendChild(el("circle",{r:30,fill:col,opacity:".05"}));
+  g.appendChild(el("circle",{r:24,fill:"#070d15",stroke:col,"stroke-width":"1.2",opacity:".9"}));
+
+  const body=el("g",{});
+  if(n.kind==="drone"){
+    body.appendChild(el("path",{d:"M-10,-10 L10,10 M10,-10 L-10,10",stroke:col,"stroke-width":"2","stroke-linecap":"round"}));
+    [[-10,-10],[10,-10],[-10,10],[10,10]].forEach(([x,y])=>
+      body.appendChild(el("circle",{cx:x,cy:y,r:5.2,fill:"none",stroke:col,"stroke-width":"1.1",class:"rotor",opacity:".85"})));
+    body.appendChild(el("rect",{x:-5,y:-5,width:10,height:10,rx:2,fill:"#0a1a1c",stroke:col,"stroke-width":"1.4"}));
+    body.appendChild(el("circle",{r:1.9,fill:"#eafffb",filter:"url(#glow)"}));
+  }else{
+    body.appendChild(el("path",{d:"M-12,11 L0,-11 L12,11 Z",fill:"none",stroke:col,"stroke-width":"1.8","stroke-linejoin":"round"}));
+    body.appendChild(el("path",{d:"M-7,4 L7,4",stroke:col,"stroke-width":"1.2"}));
+    body.appendChild(el("path",{d:"M0,-11 L0,-18 M-5,-16 A8 8 0 0 1 5,-16 M-9,-20 A14 14 0 0 1 9,-20",
+      fill:"none",stroke:col,"stroke-width":"1.2",opacity:".9"}));
+  }
+  g.appendChild(body);
+
+  const lab=el("text",{x:0,y:44,class:"node-lab","text-anchor":"middle"}); lab.textContent=n.nm;
+  const sub=el("text",{x:0,y:56,class:"node-sub","text-anchor":"middle"}); sub.textContent=n.sub;
+  g.appendChild(lab); g.appendChild(sub);
+
+  const badge=el("g",{transform:"translate(0,-44)",opacity:"0"});
+  badge.appendChild(el("rect",{x:-32,y:-9,width:64,height:16,rx:2,fill:"#1a0a10",stroke:"#ff3d57","stroke-width":".9"}));
+  const bt=el("text",{x:0,y:2.5,class:"pkt-chip","text-anchor":"middle",fill:"#ff3d57"}); bt.textContent="LINK LOST";
+  badge.appendChild(bt);
+  g.appendChild(badge);
+
+  $("#gNodes").appendChild(g);
+  nodeEls[id]={g,body,lab,sub,badge,flash,col};
+});
+
+/* ═══ log ═══ */
+let evN=0;
+function log(kind,tag,msg,route){
+  const d=document.createElement("div"); d.className="ev "+kind;
+  d.innerHTML=`<div class="ev-b"></div><div class="ev-i">
+    <div class="ev-t"><span class="ev-k">${tag}</span><span class="ev-time">${stamp()}</span></div>
+    <div class="ev-m">${msg}</div>${route?`<div class="ev-r">${route}</div>`:""}</div>`;
+  const c=$("#log"); c.insertBefore(d,c.firstChild);
+  while(c.children.length>28) c.removeChild(c.lastChild);
+  evN++; $("#evN").textContent=evN;
+}
+
+/* ═══ routing table render ═══ */
+function renderRT(){
+  const rows=["D4","D3","D2","D1"].map(id=>{
+    const p=routeTo(id,"GS");
+    const ok=!!p&&!dead.has(id);
+    const chain=dead.has(id)?"— node offline —":(p?p.join(" → "):"— no route · buffering —");
+    return `<tr class="${ok?"":"down"}">
+      <td><b>${id}</b></td>
+      <td><span class="hopchain">${chain}</span></td>
+      <td>${ok?p.length-1:"—"}</td>
+      <td><span class="badge ${ok?"ok":"no"}">${ok?"UP":"DOWN"}</span></td></tr>`;
+  }).join("");
+  $("#rt").innerHTML=rows;
+  const up=Object.keys(N).length-dead.size;
+  $("#sNodes").textContent=up+"/"+Object.keys(N).length;
+  $("#sNodes").className="num "+(dead.size?"am":"cy");
+  const lc=L.filter(([a,b])=>linkUp(a,b)).length;
+  $("#sLinks").textContent=lc;
+  $("#sLinks").className="num "+(lc<L.length?"am":"cy");
+}
+
+function paintLinks(){
+  L.forEach(([a,b])=>{
+    const k=a+"-"+b, up=linkUp(a,b);
+    linkEls[k].setAttribute("class","link "+(up?"live":"dead"));
+    rssiEls[k].textContent=up?rssiEls[k].textContent:"NO CARRIER";
+    rssiEls[k].setAttribute("fill",up?"#3f6b78":"#7a3245");
+  });
+}
+
+/* ═══ packet animation ═══ */
+const PAYLOADS=[
+  {t:"survivor detected", c:"#32e2d0", from:["D4","D2","D1","D3"]},
+  {t:"hazard: fire",      c:"#ff5a2e", from:["D2","D1"]},
+  {t:"hazard: flood",     c:"#3b9dff", from:["D4","D2"]},
+  {t:"map tile",          c:"#8fa3c0", from:["D4","D3","D2","D1"]},
+  {t:"telemetry",         c:"#8fa3c0", from:["D3","D1","D2","D4"]},
+  {t:"thermal signature", c:"#f5a524", from:["D4","D3"]}
+];
+let delivered=0, buffered=0, inFlight=0;
+
+function flashNode(id){
+  const f=nodeEls[id].flash;
+  f.setAttribute("class",""); void f.getBBox();
+  f.setAttribute("class","nodeflash");
+  setTimeout(()=>f.setAttribute("class",""),520);
+}
+
+function sendPacket(src,pl){
+  const path=routeTo(src,"GS");
+  if(!path){
+    buffered++; $("#sBuf").textContent=buffered;
+    log("warn","BUFFER",`<b>${src}</b> has no route — “${pl.t}” written to flash, will retry`, "STORE-AND-FORWARD · QUEUED");
+    return;
+  }
+  inFlight++;
+  const g=el("g",{});
+  const w=pl.t.length*5.6+26;
+  g.appendChild(el("rect",{x:-w/2,y:-9,width:w,height:18,rx:9,fill:"#060d14",stroke:pl.c,"stroke-width":"1.1",opacity:".97"}));
+  g.appendChild(el("circle",{cx:-w/2+11,r:3.4,fill:pl.c,filter:"url(#glow)"}));
+  const t=el("text",{x:5,y:3.4,class:"pkt-chip","text-anchor":"middle",fill:"#e4ecf8"});
+  t.textContent=pl.t; g.appendChild(t);
+  $("#gPkts").appendChild(g);
+
+  // highlight the chosen route
+  const segs=[];
+  for(let i=0;i<path.length-1;i++){
+    const a=path[i],b=path[i+1];
+    const k=linkEls[a+"-"+b]?a+"-"+b:b+"-"+a;
+    segs.push(k);
+    routeEls[k].setAttribute("opacity",".22");
+  }
+
+  let leg=0;
+  function hop(){
+    if(leg>=path.length-1){
+      inFlight--; g.remove();
+      segs.forEach(k=>routeEls[k].setAttribute("opacity","0"));
+      delivered++; $("#sDeliv").textContent=delivered;
+      flashNode("GS");
+      log("ok","DELIVERED",`“${pl.t}” reached ground station`, path.join(" → ")+"  ·  "+(path.length-1)+" hop"+(path.length-1===1?"":"s"));
+      return;
+    }
+    const a=N[path[leg]], b=N[path[leg+1]];
+    const t0=performance.now(), dur=620;
+    (function step(now){
+      const k=Math.min(1,(now-t0)/dur);
+      const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+      g.setAttribute("transform",`translate(${a.x+(b.x-a.x)*e},${a.y+(b.y-a.y)*e - 16})`);
+      if(k<1) requestAnimationFrame(step);
+      else{ leg++; flashNode(path[leg]); hop(); }
+    })(t0);
+  }
+  flashNode(path[0]);
+  hop();
+}
+
+/* ═══ live churn ═══ */
+setInterval(()=>{
+  L.forEach(([a,b])=>{
+    const k=a+"-"+b;
+    if(linkUp(a,b)) rssiEls[k].textContent="-"+Math.round(R(56,86))+" dBm";
+  });
+},2600);
+
+/* ═══ scripted scenario ═══ */
+renderRT(); paintLinks();
+log("info","BOOT","Mesh formed — 4 airframes + ground station, 6 bidirectional links","HELLO BEACON · 2 s INTERVAL");
+log("info","WAN","No cellular or satellite carrier detected — operating fully offline","LoRa PEER-TO-PEER ONLY");
+
+let traffic=null;
+function startTraffic(){
+  traffic=setInterval(()=>{
+    // rAF pauses on hidden tabs; cap in-flight so packets can never pile up, then resume cleanly
+    if(inFlight>=5) return;
+    const pl=pick(PAYLOADS);
+    sendPacket(pick(pl.from),pl);
+  },1900);
+}
+setTimeout(startTraffic,1200);
+
+/* — node failure + heal cycle, loops forever — */
+function killNode(id){
+  dead.add(id);
+  const ne=nodeEls[id];
+  ne.g.style.transition="opacity .7s"; ne.g.style.opacity=".3";
+  ne.body.setAttribute("opacity",".4");
+  ne.badge.setAttribute("opacity","1");
+  ne.lab.setAttribute("fill","#ff3d57");
+  paintLinks(); renderRT();
+  log("err","NODE DOWN",`<b>${N[id].nm}</b> stopped responding — terrain shadow behind ridge line`,"2 LINKS SEVERED · RE-CONVERGING");
+  setTimeout(()=>{
+    const p=routeTo("D4","GS");
+    log("warn","RE-ROUTE",`Shortest-path recomputed — traffic from D4 now avoids ${id}`,
+      p?p.join(" → ")+"  ·  0 PACKETS DROPPED":"NO ROUTE");
+    renderRT();
+  },1400);
+}
+function reviveNode(id){
+  dead.delete(id);
+  const ne=nodeEls[id];
+  ne.g.style.opacity="1";
+  ne.body.setAttribute("opacity","1");
+  ne.badge.setAttribute("opacity","0");
+  ne.lab.setAttribute("fill","#e4ecf8");
+  paintLinks(); renderRT();
+  log("ok","NODE UP",`<b>${N[id].nm}</b> re-joined the mesh — buffered payloads flushing`,
+    (routeTo(id,"GS")||[]).join(" → "));
+  if(buffered>0){
+    const n=buffered; buffered=0; $("#sBuf").textContent="0";
+    setTimeout(()=>log("ok","FLUSH",`${n} buffered packet${n>1?"s":""} delivered after route restored`,"STORE-AND-FORWARD COMPLETE"),1200);
+  }
+}
+
+function cycle(){
+  setTimeout(()=>{
+    killNode("D2");
+    setTimeout(()=>{ reviveNode("D2"); setTimeout(cycle,16000); },17000);
+  },14000);
+}
+cycle();
+
+})();
+</script>

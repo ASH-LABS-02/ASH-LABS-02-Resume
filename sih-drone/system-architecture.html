@@ -1,0 +1,312 @@
+<title>SANJEEVANI Signal Chain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#05090f; --panel:#0b111c; --panel-2:#0f1725; --raise:#131d2e;
+  --line:#1b2942; --line-soft:#152134;
+  --ink:#e4ecf8; --ink-2:#8fa3c0; --ink-3:#5a6d8a;
+  --cyan:#32e2d0; --red:#ff3d57; --amber:#f5a524; --blue:#4a90e2; --violet:#c86bff;
+  --ui:"Chakra Petch","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--ui);font-size:14px;
+  overflow:auto;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(#0b1626 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,#0b1626 1px,transparent 1px) 0 0/44px 44px;
+  opacity:.5;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 40%,#000 30%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 40%,#000 30%,transparent 100%);
+}
+.sheet{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;gap:10px;padding:10px;min-width:1180px}
+
+/* ── header ── */
+.hdr{display:flex;align-items:stretch;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden;flex:none}
+.hdr>div{background:var(--panel);display:flex;align-items:center;min-width:0}
+.hb{padding:11px 16px;gap:12px;flex:none}
+.mark{width:30px;height:30px;flex:none;border:1.5px solid var(--cyan);border-radius:50%;display:grid;place-items:center}
+.mark svg{width:16px;height:16px;stroke:var(--cyan);fill:none;stroke-width:1.6}
+.brand-t{font-size:16px;font-weight:700;letter-spacing:.14em;line-height:1.1}
+.brand-s{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.1em;margin-top:2px}
+.htitle{padding:11px 20px;flex-direction:column;align-items:flex-start;gap:3px;flex:1 1 auto;min-width:0}
+.htitle .lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.htitle .val{font-size:14px;font-weight:600;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.htitle .val em{font-style:normal;color:var(--ink-3);font-weight:400}
+.hspec{padding:11px 16px;flex-direction:column;align-items:flex-start;gap:3px;flex:none}
+.hspec .lab{font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;color:var(--ink-3);white-space:nowrap}
+.hspec .v{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.05em;white-space:nowrap}
+.hoff{flex:none;padding:0 18px!important;gap:11px;background:linear-gradient(180deg,#1a0f14,#12090d)!important}
+.hoff svg{width:21px;height:21px;stroke:var(--amber);fill:none;stroke-width:1.5;flex:none}
+.hoff b{display:block;font-size:12px;font-weight:700;letter-spacing:.11em;color:var(--amber);line-height:1.2;white-space:nowrap}
+.hoff span{font-family:var(--mono);font-size:8.5px;letter-spacing:.07em;color:#a5734b;white-space:nowrap}
+
+/* ── flow ── */
+.flow{flex:1;display:grid;
+  grid-template-columns:minmax(300px,1.55fr) 46px minmax(190px,1fr) 46px minmax(190px,1fr) 46px minmax(200px,1.05fr);
+  align-items:stretch;min-height:0}
+
+.zone{background:var(--panel);border:1px solid var(--line);border-radius:3px;display:flex;flex-direction:column;min-width:0;position:relative}
+.zone::after{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:2px;border-radius:3px 3px 0 0}
+.z1::after{background:var(--cyan)} .z2::after{background:var(--amber)}
+.z3::after{background:var(--violet)} .z4::after{background:var(--blue)}
+
+.zh{padding:9px 13px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#111a29,#0c1420);flex:none}
+.zh .n{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--ink-3);margin-bottom:4px}
+.zh h2{font-size:12.5px;font-weight:700;letter-spacing:.12em;line-height:1.2}
+.zh .hw{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.06em;margin-top:4px;
+  line-height:1.35;min-height:2.7em}
+.z1 .zh h2{color:var(--cyan)} .z2 .zh h2{color:var(--amber)}
+.z3 .zh h2{color:var(--violet)} .z4 .zh h2{color:var(--blue)}
+
+.zb{padding:11px;display:flex;flex-direction:column;gap:9px;flex:1;min-height:0}
+.split{display:grid;grid-template-columns:1fr 26px 1fr;gap:0;flex:1;min-height:0;align-items:stretch}
+.col{display:flex;flex-direction:column;gap:6px;min-width:0}
+
+.sub{font-family:var(--mono);font-size:8px;letter-spacing:.16em;color:var(--ink-3);
+  display:flex;align-items:center;gap:7px;margin-bottom:1px}
+.sub::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.mod{background:var(--panel-2);border:1px solid var(--line);border-radius:2px;padding:7px 9px;position:relative}
+.mod::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ink-3);border-radius:2px 0 0 2px}
+.mod b{display:block;font-size:11px;font-weight:600;letter-spacing:.03em;line-height:1.3}
+.mod span{display:block;font-family:var(--mono);font-size:8.5px;color:var(--ink-3);letter-spacing:.04em;margin-top:2px;line-height:1.35}
+.mod.cy::before{background:var(--cyan)} .mod.am::before{background:var(--amber)}
+.mod.vi::before{background:var(--violet)} .mod.bl::before{background:var(--blue)}
+.mod.gy::before{background:#33445e}
+.mod.ai{background:linear-gradient(135deg,#101d24,#0d1523)}
+.mod .chip{position:absolute;right:7px;top:7px;font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;
+  color:var(--cyan);border:1px solid #32e2d040;background:#32e2d00d;padding:1px 4px;border-radius:2px}
+.mod.am .chip{color:var(--amber);border-color:#f5a52440;background:#f5a5240d}
+
+/* inner vertical connector */
+.vcon{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:var(--cyan)}
+.vcon .ln{width:1px;flex:1;background:linear-gradient(180deg,transparent,#32e2d055,transparent)}
+.vcon .ar{display:flex;flex-direction:column;align-items:center;padding:5px 0}
+.vcon svg{width:14px;height:14px;stroke:var(--cyan);fill:none;stroke-width:1.6}
+.vcon em{font-style:normal;font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;color:var(--cyan);
+  writing-mode:vertical-rl;text-orientation:mixed;margin-top:4px;opacity:.85}
+
+/* between-zone arrows */
+.gut{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:0 3px}
+.gut .track{position:absolute;left:50%;top:14%;bottom:14%;width:1px;transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,var(--line),transparent)}
+.arrow{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;z-index:2;background:var(--ground);padding:8px 0}
+.arrow .head{width:26px;height:26px;border-radius:50%;border:1px solid;display:grid;place-items:center;position:relative}
+.arrow .head svg{width:13px;height:13px;fill:none;stroke-width:2}
+.arrow .head::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid;opacity:.22}
+.arrow em{font-style:normal;font-family:var(--mono);font-size:7.5px;letter-spacing:.09em;
+  writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap;line-height:1.2}
+.arrow.fwd .head{border-color:var(--cyan)} .arrow.fwd .head svg{stroke:var(--cyan)}
+.arrow.fwd .head::after{border-color:var(--cyan)} .arrow.fwd em{color:var(--cyan)}
+.arrow.back .head{border-color:#4a6a86} .arrow.back .head svg{stroke:#7f9ab5}
+.arrow.back .head::after{border-color:#4a6a86} .arrow.back em{color:#7f9ab5}
+.arrow.back svg{transform:rotate(180deg)}
+.gut .lat{font-family:var(--mono);font-size:7.5px;letter-spacing:.06em;color:var(--ink-3);
+  writing-mode:vertical-rl;text-orientation:mixed;background:var(--ground);padding:5px 0;z-index:2}
+
+/* ── footer ── */
+.foot{display:grid;grid-template-columns:auto 1fr auto;gap:10px;flex:none;align-items:stretch}
+.chain{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 15px;
+  display:flex;align-items:center;gap:0}
+.chain .st{display:flex;flex-direction:column;gap:2px;padding-right:14px}
+.chain .st .l{font-family:var(--mono);font-size:8px;letter-spacing:.13em;color:var(--ink-3);white-space:nowrap}
+.chain .st .v{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--cyan);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chain .sep{width:1px;align-self:stretch;background:var(--line);margin-right:14px}
+.chain .st:last-of-type{padding-right:0}
+
+.claim{background:linear-gradient(100deg,#0d1b1a,#0b111c 65%);border:1px solid #1f4a45;border-left:2px solid var(--cyan);
+  border-radius:3px;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.claim .big{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--cyan);line-height:1;font-variant-numeric:tabular-nums;flex:none}
+.claim .big small{display:block;font-size:8px;letter-spacing:.13em;color:var(--ink-3);margin-top:4px;font-weight:400}
+.claim p{font-size:11.5px;line-height:1.5;color:var(--ink-2)}
+.claim p b{color:var(--ink);font-weight:600}
+
+.key{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 15px;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;flex:none}
+.key .r{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.07em;color:var(--ink-2);white-space:nowrap}
+.key .r i{width:15px;height:0;border-top:2px solid;flex:none}
+</style>
+
+<div class="sheet">
+
+  <header class="hdr">
+    <div class="hb">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4.5"/></svg></div>
+      <div><div class="brand-t">SANJEEVANI</div><div class="brand-s">SYSTEM ARCHITECTURE</div></div>
+    </div>
+    <div class="htitle">
+      <div class="lab">SIGNAL CHAIN</div>
+      <div class="val">Sensor → Responder <em>·&nbsp; on-device inference, no cloud</em></div>
+    </div>
+    <div class="hspec"><div class="lab">COMPUTE</div><div class="v">RASPBERRY PI 5 · 8GB</div></div>
+    <div class="hspec"><div class="lab">AUTOPILOT</div><div class="v">PIXHAWK 6C · PX4</div></div>
+    <div class="hspec"><div class="lab">DATALINK</div><div class="v">LoRa SX1276 · 865 MHz</div></div>
+    <div class="hoff">
+      <svg viewBox="0 0 24 24"><path d="M2 8.8a16 16 0 0 1 20 0M5.5 12.4a11 11 0 0 1 13 0M9 16a6 6 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.1" fill="currentColor" stroke="none"/><path d="M3 3l18 18" stroke="#ff3d57"/></svg>
+      <div><b>ZERO INTERNET DEPENDENCY</b><span>NO CLOUD INFERENCE · NO CELL · NO SATCOM</span></div>
+    </div>
+  </header>
+
+  <main class="flow">
+
+    <!-- ═══ ZONE 1 ═══ -->
+    <section class="zone z1">
+      <div class="zh">
+        <div class="n">ZONE 01</div>
+        <h2>ON-DRONE EDGE COMPUTE</h2>
+        <div class="hw">RASPBERRY PI 5 · 8GB · HAILO-8L NPU · UBUNTU 24.04 + ROS 2</div>
+      </div>
+      <div class="zb">
+        <div class="split">
+          <div class="col">
+            <div class="sub">SENSOR PAYLOAD</div>
+            <div class="mod gy"><b>RGB Camera</b><span>USB UVC · 1080p @ 30 fps</span></div>
+            <div class="mod gy"><b>Thermal Imager</b><span>FLIR Lepton 3.5 · 160×120 radiometric</span></div>
+            <div class="mod gy"><b>LiDAR</b><span>RPLiDAR A1 · 360° · 12 m range</span></div>
+            <div class="mod gy"><b>IMU</b><span>ICM-20948 · 9-DoF @ 200 Hz</span></div>
+            <div class="mod gy"><b>GNSS</b><span>u-blox NEO-M9N · RTK-capable</span></div>
+          </div>
+
+          <div class="vcon">
+            <div class="ln"></div>
+            <div class="ar">
+              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <em>RAW STREAMS</em>
+            </div>
+            <div class="ln"></div>
+          </div>
+
+          <div class="col">
+            <div class="sub">INFERENCE PIPELINE</div>
+            <div class="mod cy ai"><b>Sensor Fusion</b><span>thermal × RGB registration, IMU time-sync</span></div>
+            <div class="mod cy ai"><b>YOLOv8n-SAR</b><span>person / limb detection · INT8 quantised</span><span class="chip">18 FPS</span></div>
+            <div class="mod cy ai"><b>HazardNet-v3</b><span>fire · flood · debris · structural · electrical</span></div>
+            <div class="mod cy ai"><b>RTAB-Map SLAM</b><span>LiDAR odometry → occupancy grid + loop closure</span></div>
+            <div class="mod cy"><b>Geo-Tagger</b><span>pixel → WGS-84 via pose + terrain model</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- gutter 1 -->
+    <div class="gut">
+      <div class="track"></div>
+      <div class="arrow fwd">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>RE-TASK / LOITER CMD</em>
+      </div>
+      <div class="lat">MAVLink · UART 921600</div>
+      <div class="arrow back">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>POSE + ATTITUDE</em>
+      </div>
+    </div>
+
+    <!-- ═══ ZONE 2 ═══ -->
+    <section class="zone z2">
+      <div class="zh">
+        <div class="n">ZONE 02</div>
+        <h2>FLIGHT CONTROL</h2>
+        <div class="hw">PIXHAWK 6C · PX4 v1.14 · HARD REAL-TIME LOOP</div>
+      </div>
+      <div class="zb">
+        <div class="sub">AUTOPILOT STACK</div>
+        <div class="mod am"><b>EKF2 State Estimator</b><span>IMU + GNSS + baro fusion @ 250 Hz</span></div>
+        <div class="mod am"><b>Mission Planner</b><span>lawnmower sweep · dynamic re-task on detection</span></div>
+        <div class="mod am"><b>Obstacle Avoidance</b><span>LiDAR-gated · terrain following</span></div>
+        <div class="mod am"><b>Failsafe &amp; RTL</b><span>low-batt · link-loss · geofence breach</span><span class="chip">SAFETY</span></div>
+        <div class="mod gy"><b>Motor Mixer → ESC</b><span>4× BLDC · DShot600</span></div>
+      </div>
+    </section>
+
+    <!-- gutter 2 -->
+    <div class="gut">
+      <div class="track"></div>
+      <div class="arrow fwd">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>DETECTION PAYLOAD</em>
+      </div>
+      <div class="lat">SPI · CBOR &lt;220 B</div>
+      <div class="arrow back">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>PEER TELEMETRY</em>
+      </div>
+    </div>
+
+    <!-- ═══ ZONE 3 ═══ -->
+    <section class="zone z3">
+      <div class="zh">
+        <div class="n">ZONE 03</div>
+        <h2>MESH COMMS</h2>
+        <div class="hw">LoRa SX1276 · 865 MHz ISM · SF9 · ~4 km LOS</div>
+      </div>
+      <div class="zb">
+        <div class="sub">RELAY STACK</div>
+        <div class="mod vi"><b>CBOR Packetiser</b><span>lossy-tolerant binary · &lt;220 B per event</span></div>
+        <div class="mod vi"><b>Priority Queue</b><span>survivor &gt; hazard &gt; map tile &gt; telemetry</span></div>
+        <div class="mod vi"><b>Store &amp; Forward</b><span>flash-backed buffer · replays on link return</span></div>
+        <div class="mod vi"><b>Mesh Router</b><span>shortest-path · self-heals around dead nodes</span></div>
+        <div class="mod gy"><b>AES-128 + CRC</b><span>payload encryption &amp; integrity</span></div>
+      </div>
+    </section>
+
+    <!-- gutter 3 -->
+    <div class="gut">
+      <div class="track"></div>
+      <div class="arrow fwd">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>MULTI-HOP RELAY</em>
+      </div>
+      <div class="lat">DRONE → DRONE → GROUND</div>
+      <div class="arrow back">
+        <div class="head"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        <em>TASKING / ACK</em>
+      </div>
+    </div>
+
+    <!-- ═══ ZONE 4 ═══ -->
+    <section class="zone z4">
+      <div class="zh">
+        <div class="n">ZONE 04</div>
+        <h2>GROUND STATION</h2>
+        <div class="hw">NDRF FORWARD BASE · RUGGED LAPTOP + LoRa GATEWAY</div>
+      </div>
+      <div class="zb">
+        <div class="sub">RESPONDER INTERFACE</div>
+        <div class="mod bl"><b>LoRa Gateway</b><span>de-duplicates multi-path arrivals</span></div>
+        <div class="mod bl"><b>Command Dashboard</b><span>live map · survivor pins · hazard overlay</span></div>
+        <div class="mod bl"><b>Map Fusion</b><span>merges SLAM tiles from every airframe</span></div>
+        <div class="mod bl"><b>Triage &amp; Dispatch</b><span>priority queue → nearest rescue team</span></div>
+        <div class="mod gy"><b>Export</b><span>KML · CSV · NDRF SITREP</span></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div class="foot">
+    <div class="chain">
+      <div class="st"><div class="l">INFERENCE</div><div class="v">54 ms</div></div><div class="sep"></div>
+      <div class="st"><div class="l">GEO-TAG</div><div class="v">11 ms</div></div><div class="sep"></div>
+      <div class="st"><div class="l">PACKETISE</div><div class="v">3 ms</div></div><div class="sep"></div>
+      <div class="st"><div class="l">MESH (3 HOPS)</div><div class="v">1.28 s</div></div><div class="sep"></div>
+      <div class="st"><div class="l">RENDER</div><div class="v">40 ms</div></div>
+    </div>
+
+    <div class="claim">
+      <div class="big">1.39 s<small>DETECTION → RESPONDER</small></div>
+      <p>A survivor spotted <b>4 km beyond any radio or cellular coverage</b> appears as a pinned, GPS-tagged, confidence-scored alert on the responder's screen in under two seconds — with <b>no internet, no tower and no cloud GPU</b> anywhere in the chain. Every model runs on the drone itself.</p>
+    </div>
+
+    <div class="key">
+      <div class="r"><i style="border-color:#32e2d0"></i>DATA PATH — DETECTIONS &amp; MAP</div>
+      <div class="r"><i style="border-color:#7f9ab5"></i>CONTROL / FEEDBACK PATH</div>
+      <div class="r"><i style="border-color:#33445e;border-top-style:dashed"></i>HARDWARE INTERFACE</div>
+    </div>
+  </div>
+</div>

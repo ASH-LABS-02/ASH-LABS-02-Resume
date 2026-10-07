@@ -1,67 +1,90 @@
-# Ashwin Raghavendran — Portfolio
+# ASH-LABS-02-Resume
 
-A responsive, voxel-inspired portfolio built with React, TypeScript, Vite, Three.js and Anime.js.
+Ashwin Raghavendran's voxel-inspired portfolio — AI & IoT developer and Computer Science (IoT) undergraduate.
 
-## Run
+Built with React, TypeScript, Vite, Three.js, and Anime.js.
+
+## Featured projects
+
+- **VacX** — an autonomous smart vacuum and mopping robot; Atomquest’25 national semifinalist.
+- **RealTime-Finance** — real-time market-data pipelines, sentiment analysis, and GPT-powered insights.
+- **DepthWizard** — calibrated 3D surface reconstruction from optical satellite imagery, with a link to the deployed application.
+
+Project descriptions, evaluation results, profile information, education, and skills live in `src/data/portfolio.ts`. Evaluation figures are supplied by the portfolio owner, not independently reproduced by this website.
+
+## Run locally
+
+Use Node.js 22.12+ or a supported newer version (Node.js 24 recommended).
 
 ```sh
-npm install
+npm ci
 npm run dev -- --host 127.0.0.1
 ```
 
-## Production
+## Production build
 
 ```sh
 npm run lint
 npm run build
-npm run preview -- --host 127.0.0.1
+npm run preview -- --host 127.0.0.1 --port 4173
 ```
 
-Deploy the generated `dist` directory to a static host. The site currently uses root-relative asset paths, so it is configured for a domain root rather than a subdirectory. Nothing has been published automatically.
+The production output is `dist/`. It is generated during deployment and intentionally excluded from Git.
 
-## Personalize before publishing
+## Hosting
 
-Edit `src/data/portfolio.ts`:
+This is a frontend-only static website. No API keys or application server are required to host the portfolio. DepthWizard and RealTime-Finance are separate projects; their backends are not part of this repository.
 
-- `PROFILE.email`: real contact email; enables the contact CTA.
-- `PROFILE.linkedin`, `github`, `instagram`: complete verified profile URLs.
-- `PROFILE.resume`: path to your résumé after placing it in `public` (for example `/resume.pdf`).
-- `PROJECTS`: project titles, descriptions, preview images and demo paths.
+Standard static-host settings:
 
-Empty personal destinations are intentionally hidden, not replaced with fake links. The contact section currently offers a working return to projects and clearly states that direct contact links are being updated. No contact backend is configured.
+- Install command: `npm ci`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Node.js: `24`
 
-The three showcased demos are existing local prototypes from `sih-drone/`, copied into `public/demos/`. They are labeled as prototypes/simulations, not production systems. Edit the originals and synchronize their public copies when updating. Preview images are browser captures of those actual interfaces. Source downloads are the standalone HTML demo files, not links to nonexistent repositories.
+Navigation uses section anchors such as `#work`, `#about`, `#play`, and `#connect`; server-side route rewrites are not needed.
 
-## Motion and rendering
+### GitHub Pages
 
-- `src/components/VoxelScene/VoxelScene.tsx`: pointer-responsive camera and instanced cube particles; Anime.js animates the scene's rotation.
-- `src/components/VoxelScene/PortalScene.tsx`: dimensional voxel frames with animated GLSL portal surfaces; rotation follows scroll.
-- `src/components/Playground/`: a real instanced 3D sculpture with knot/sphere morphing, scatter/assemble, drag and arrow-key rotation, reset view and an image fallback.
-- `src/components/FeaturedProjects/ProjectPreview.tsx`: native modal dialog with embedded local demos, fit/actual-size views, project guidance, previous/next navigation, loading/retry feedback, Escape/close behavior, focus restoration and body-scroll locking.
-- `src/components/Hero/`: original portrait layers, interactive cyan energy, pointer tilt and scroll parallax. The portrait is a layered image, not a rotatable head model.
-- `src/components/MagicCard/`: perspective tilt, depth and pointer-following light with Anime.js return transitions.
-- `src/components/CTA/`: a blended night-scene transition, edge-perched llama, readable contact card and subtle voxel particles. Ambient motion pauses offscreen and follows the global motion preference.
-- `src/motion/Reveal.tsx`: scoped, scroll-triggered reveals with cleanup.
-- `src/motion/MotionProvider.tsx`: reduced-motion support and a persistent manual motion switch.
+Public site: [ash-labs-02.github.io/ASH-LABS-02-Resume](https://ash-labs-02.github.io/ASH-LABS-02-Resume/).
 
-Three.js is lazy-loaded. Decorative WebGL render loops stop offscreen or when the document is hidden. Pixel ratio and mobile particle counts are capped. WebGL failures leave image fallbacks available. Disabling motion removes decorative canvases, stops continuous animation, and reveals all content immediately. The interactive sculpture remains as a static WebGL view with instant user-triggered changes. Its touch surface allows vertical page scrolling. Native scrolling, text selection and keyboard focus are preserved. Optional 3D module errors are isolated so the rest of the page remains usable.
+The `.github/workflows/deploy.yml` workflow installs dependencies, lints, builds, and deploys on every push to `main`. Repository Settings → Pages must use **GitHub Actions** as its source. No custom deployment secrets are required.
 
-Fonts are self-hosted; license files are under `public/fonts/`. Original PNG artwork is preserved alongside lossless WebP delivery assets.
+The workflow builds with `--base=/ASH-LABS-02-Resume/`. Runtime public assets use `src/assetUrl.ts`, including wallpaper exports; Vite rewrites CSS and HTML asset paths. Normal local development still uses `/`.
 
-The sculpture only updates its instance matrices during morph/scatter changes; idle rotation and floating operate on the parent group. Demo previews preserve the desktop interface in a scaled viewport, with actual-size scrolling for closer inspection.
+To preview the Pages build locally:
 
-## Verification performed
+```sh
+npm run build -- --base=/ASH-LABS-02-Resume/
+npm run preview -- --host 127.0.0.1 --port 4174 --base=/ASH-LABS-02-Resume/
+```
 
-- TypeScript + Vite production build; Oxlint; npm audit.
-- Headless Edge / Playwright at desktop 1536×1024 and widths 320, 390, 768 and 1024.
-- Hero pointer tilt, energy toggle, navigation anchors, source download, demo popup and project expansion/collapse.
-- Persistent motion preference, OS reduced-motion setting, keyboard skip link, image loading, horizontal overflow and browser-console health.
-- No-WebGL fallback for the portrait and portals.
-- Sculpture morphing/scattering, keyboard rotation, pointer drag, static-mode updates, project dialog focus/close, and direct section URLs.
-- Touch-emulated vertical swiping over the sculpture canvas still scrolls the document.
-- Demo fit/actual-size round trips, previous/next wraparound, and scaled pointer interaction at desktop, phone and landscape sizes.
-- Slow preview loading and retry recovery; idle sculpture tile buffers stay unchanged while scatter updates them.
+Open `http://127.0.0.1:4174/ASH-LABS-02-Resume/`. If the repository is renamed or moved to a custom domain, update the workflow's base path.
 
-Real-device Safari and live personal contact destinations still need verification before public launch.
+## Features
 
-# ASH-LABS-02-Resume
+- Layered voxel avatar, pointer tilt, and optional cyan energy effects.
+- Scroll reveals, assembling project previews, and native accessible project dialogs.
+- Interactive Three.js sculpture with shape changes, scatter/reassembly, and keyboard controls.
+- A final constellation side quest with palette selection, shuffle, and desktop/phone PNG wallpaper export.
+- Global motion controls, reduced-motion support, and WebGL fallbacks.
+- Responsive education, skills, and project sections without contact forms.
+
+Heavy 3D modules are lazy-loaded. Animated scenes pause when offscreen or the document is hidden, with pixel ratios and particle counts capped for performance.
+
+## Repository layout
+
+- `src/` — application components, motion controls, and portfolio data.
+- `public/` — served images, project previews, fonts, and retained demo assets.
+- `assets-src/` — original source artwork.
+- `sih-drone/` — retained earlier drone-interface prototypes, not the current featured projects.
+
+Fonts are self-hosted; their license files are in `public/fonts/`. Original PNG artwork is retained alongside WebP delivery assets. The DepthWizard thumbnail is a capture of its live Glover Park scene; VacX and RealTime-Finance previews are labeled system illustrations.
+
+## Verification
+
+`npm run build` runs TypeScript checks and creates the production bundle. `npm run lint` runs Oxlint.
+
+The current portfolio has also been checked in headless Edge with Playwright at desktop and mobile widths for project dialogs, navigation, image loading, external links, motion controls, and wallpaper downloads. The browser QA scripts and captures are workspace artifacts, not production dependencies.
+
+Real-device Safari and Firefox testing remain advisable. Vite currently reports a size warning for the shared Three.js chunk.

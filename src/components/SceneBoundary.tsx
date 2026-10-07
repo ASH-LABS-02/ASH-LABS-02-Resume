@@ -1,0 +1,9 @@
+import { Component, type ReactNode } from 'react'
+
+// A failed optional GPU chunk must never take down the portfolio content.
+export default class SceneBoundary extends Component<{ children: ReactNode; onError?: () => void }, { failed: boolean }> {
+  state = { failed: false }
+  static getDerivedStateFromError() { return { failed: true } }
+  componentDidCatch() { this.props.onError?.() }
+  render() { return this.state.failed ? null : this.props.children }
+}

@@ -1,0 +1,28 @@
+.about-section { position: relative; padding: 10px 5% 100px; background: var(--bg); }
+.about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 7vw, 120px); max-width: 1320px; margin: auto; padding-block: 64px; border-top: 1px solid var(--line); }
+.about-eyebrow { margin: 0 0 20px; font-size: 10px; color: var(--cyan); text-transform: uppercase; letter-spacing: .14em; line-height: 1.7; }
+.about-copy h2 { font-family: 'Barlow Condensed', Impact, sans-serif; text-transform: uppercase; font-size: clamp(48px, 5vw, 72px); line-height: .98; letter-spacing: -.02em; margin: 0; }
+.about-copy h2 span { color: #aebbbf; }
+.about-summary { margin: 24px 0 18px; font-size: 14px; line-height: 1.9; color: #a9b7be; max-width: 510px; }
+.about-github { display: inline-flex; align-items: center; gap: 20px; color: var(--cyan); font-size: 12px; min-height: 44px; text-decoration: none; }
+.about-github svg { width: 18px; }
+.about-background { align-self: center; }
+.about-background h3 { font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700; font-size: 27px; line-height: 1.2; margin: 0 0 10px; }
+.about-education > p:not(.about-eyebrow), .about-award div > p:not(.about-eyebrow) { color: #a9b7be; line-height: 1.8; font-size: 12px; margin: 0; }
+.about-education dl { display: flex; gap: 55px; margin: 26px 0 0; }
+.about-education dt { color: #8d9da5; font-size: 10px; margin-bottom: 9px; }
+.about-education dd { font-size: 19px; color: #e3edef; margin: 0; font-variant-numeric: tabular-nums; }
+.about-award { margin-top: 28px; padding-top: 25px; display: flex; align-items: flex-start; gap: 18px; border-top: 1px solid var(--line); }
+.about-award-mark { font-size: 40px; color: #d5b87f; line-height: 1; }
+.about-award .about-eyebrow { color: #d5b87f; margin-bottom: 9px; font-size: 9px; }
+.about-award h3 { font-size: 25px; }
+.about-skills { max-width: 1320px; margin: auto; border-top: 1px solid var(--line); padding-top: 30px; }
+.about-skills-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 30px; }
+.about-skills-heading h3 { margin: 0; font-size: 15px; font-weight: 400; }
+.about-skills-heading span { font-size: 10px; color: #8d9da5; }
+.skill-columns { display: grid; grid-template-columns: .8fr 1fr 1.1fr 1fr; gap: 30px; }
+.skill-columns h4 { font-size: 11px; color: var(--cyan); margin: 0 0 16px; font-weight: 400; }
+.skill-columns ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-columns li { font-size: 10px; color: #adbac2; padding: 7px 10px; border: 1px solid #ffffff12; border-radius: 5px; background: #ffffff02; line-height: 1.5; }
+@media (max-width: 800px) { .about-intro { grid-template-columns: 1fr; gap: 38px; padding-block: 42px; } .about-summary { max-width: 100%; } .skill-columns { grid-template-columns: 1fr 1fr; gap: 28px; } }
+@media (max-width: 500px) { .about-section { padding: 0 6% 64px; } .about-summary { font-size: 13px; } .about-background h3 { font-size: 24px; } .about-skills-heading { flex-direction: column; align-items: flex-start; gap: 9px; } .skill-columns { gap: 24px 14px; } .skill-columns li { font-size: 9px; padding: 6px 8px; } }

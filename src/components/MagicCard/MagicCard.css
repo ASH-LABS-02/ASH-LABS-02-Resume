@@ -1,0 +1,36 @@
+.magic-card {
+  transform-style: preserve-3d;
+  transition: border-color .3s;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
+.depth-perspective { perspective: 1200px; height: 100%; }
+.magic-card:hover { border-color: #74e9e550; }
+.magic-card--content { transform: translateZ(15px); }
+
+.magic-card--glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle 260px at var(--mx, 50%) var(--my, 50%),
+    rgba(167, 139, 250, 0.25),
+    transparent 70%
+  );
+}
+
+.magic-card:hover .magic-card--glow {
+  opacity: 1;
+}
+
+.magic-card--content {
+  position: relative;
+  z-index: 1;
+}

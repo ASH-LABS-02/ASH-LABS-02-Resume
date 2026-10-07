@@ -1,0 +1,39 @@
+@font-face { font-family: 'Barlow Condensed'; src: url('/fonts/barlow-condensed-bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Manrope'; src: url('/fonts/manrope-regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+:root { --bg: #080a0b; --text: #f5f6f5; --muted: #b4b9ba; --cyan: #74e9e5; --purple: #ac93e8; --line: #ffffff18; color-scheme: dark; font-family: 'Manrope', sans-serif; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+body { margin: 0; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+::selection { background: var(--cyan); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 6px; }
+.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: 30px 3%; display: flex; align-items: center; justify-content: space-between; transition: background .3s, padding .3s; }
+.site-header.is-scrolled { padding-top: 13px; padding-bottom: 13px; background: #080a0bed; backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
+.site-header a[aria-current='location'] { color: var(--cyan); }
+.wordmark { font-size: 30px; font-weight: bold; text-decoration: none; letter-spacing: -.08em; }
+.wordmark span { color: var(--cyan); }
+.site-header nav { display: flex; align-items: center; gap: 42px; }
+.site-header nav a { text-decoration: none; font-size: 16px; min-height: 44px; display: inline-flex; align-items: center; }
+.site-header nav a:hover { color: var(--cyan); }
+@media (max-width: 380px) { .site-header nav { gap: 11px !important; } .site-header nav a { font-size: 11px !important; } .motion-toggle { padding-left: 8px !important; font-size: 10px !important; } }
+.motion-toggle { color: var(--text); background: transparent; border: 0; border-left: 1px solid var(--line); padding: 12px 0 12px 28px; font-size: 13px; display: flex; gap: 10px; align-items: center; }
+.motion-dot { width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; }
+[data-motion='off'] .motion-dot { background: var(--muted); }
+.reading-progress { position: fixed; top: 0; height: 2px; width: 100%; z-index: 50; transform-origin: left; transform: scaleX(0); background: var(--cyan); pointer-events: none; }
+.skip-link { position: fixed; z-index: 100; background: var(--cyan); color: var(--bg); padding: 15px; transform: translateY(-150%); }
+.skip-link:focus { transform: translateY(0); }
+.primary-link { display: inline-flex; align-items: center; gap: 28px; padding: 20px 28px; border-radius: 10px; background: var(--cyan); color: #081214; text-decoration: none; font-size: 18px; font-weight: bold; border: 1px solid transparent; transition: box-shadow .3s, background .3s; }
+.primary-link:hover { background: #abfff8; box-shadow: 0 8px 40px #74e9e522; }
+.arrow-icon { flex-shrink: 0; transition: translate .3s; }
+a:hover > .arrow-icon { translate: 3px -3px; }
+.site-footer { padding: 32px 5%; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+.site-footer a { text-decoration: none; }
+.site-footer a:hover { color: var(--cyan); }
+[data-motion='off'] *, [data-motion='off'] *::before, [data-motion='off'] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-motion='off'] { scroll-behavior: auto; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+@media (max-width: 640px) { .site-header { padding: 22px 6%; } .site-header nav { gap: 18px; } .site-header nav a { font-size: 13px; } .motion-toggle { padding-left: 12px; font-size: 11px; gap: 7px; } .wordmark { font-size: 26px; } .site-footer { gap: 24px; font-size: 11px; } }

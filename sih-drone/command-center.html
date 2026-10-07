@@ -1,0 +1,956 @@
+<title>SANJEEVANI Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#05090f;
+  --panel:#0b111c;
+  --panel-2:#0f1725;
+  --raise:#141f31;
+  --line:#1b2942;
+  --line-soft:#14203280;
+  --ink:#e4ecf8;
+  --ink-2:#8fa3c0;
+  --ink-3:#5a6d8a;
+
+  --cyan:#32e2d0;
+  --cyan-deep:#0e8f83;
+  --red:#ff3d57;
+  --amber:#f5a524;
+  --blue:#4a90e2;
+
+  --fire:#ff5a2e;
+  --flood:#3b9dff;
+  --debris:#f5a524;
+  --struct:#c86bff;
+  --elec:#ffe14d;
+
+  --ui:"Chakra Petch","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--ui);
+  overflow:hidden;
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:99;
+  background:radial-gradient(ellipse 120% 80% at 50% 0%,transparent 40%,#05090fcc 100%);
+}
+
+.console{
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:8px;
+  padding:8px;
+}
+
+/* ─── header ─── */
+.hdr{
+  display:flex;align-items:stretch;gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:3px;
+  overflow:hidden;
+}
+.hdr>*{background:var(--panel);display:flex;align-items:center}
+.hdr-brand{padding:10px 16px;gap:12px;flex:none}
+.mark{
+  width:30px;height:30px;flex:none;
+  border:1.5px solid var(--cyan);border-radius:50%;
+  display:grid;place-items:center;position:relative;
+}
+.mark::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;
+  border:1px solid var(--cyan);opacity:.25;
+  animation:ping 2.6s ease-out infinite;
+}
+@keyframes ping{0%{transform:scale(.85);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+.mark svg{width:16px;height:16px;stroke:var(--cyan);fill:none;stroke-width:1.6}
+.brand-t{font-size:16px;font-weight:700;letter-spacing:.14em;line-height:1.1}
+.brand-s{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.1em;margin-top:2px}
+
+.hdr-mission{padding:10px 18px;flex-direction:column;align-items:flex-start;gap:3px;flex:1 1 auto;min-width:150px;overflow:hidden}
+.hdr-mission .lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-3);white-space:nowrap}
+.hdr-mission .val{font-size:14px;font-weight:600;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.hdr-mission .val em{font-style:normal;color:var(--ink-3);font-weight:400}
+
+.stat{padding:10px 12px;flex-direction:column;align-items:flex-start;gap:2px;flex:none}
+.stat-clk{min-width:142px}
+.stat-n{min-width:74px}
+.stat .lab{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ink-3);white-space:nowrap}
+.stat .num{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.stat .num.cy{color:var(--cyan)}
+.stat .num.am{color:var(--amber)}
+.stat .num.rd{color:var(--red)}
+
+.pill{
+  font-family:var(--mono);font-size:9px;letter-spacing:.11em;
+  padding:4px 8px;border-radius:2px;border:1px solid;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.pill-auto{color:var(--cyan);border-color:#32e2d055;background:#32e2d012}
+.pill-arm{color:var(--amber);border-color:#f5a52455;background:#f5a52412}
+.dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex:none}
+.dot.bl{animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+
+.hdr-offline{
+  flex:none;padding:0 18px;gap:12px;
+  background:linear-gradient(180deg,#1a0f14,#12090d)!important;
+  border-left:1px solid var(--line);
+}
+.off-i{width:26px;height:26px;flex:none;position:relative;display:grid;place-items:center}
+.off-i svg{width:22px;height:22px;stroke:var(--amber);fill:none;stroke-width:1.5}
+.off-txt{display:flex;flex-direction:column;gap:2px}
+.off-a{font-size:12.5px;font-weight:700;letter-spacing:.11em;color:var(--amber);line-height:1;white-space:nowrap}
+.off-b{font-family:var(--mono);font-size:9px;letter-spacing:.07em;color:#a5734b;white-space:nowrap}
+.mesh-bars{display:flex;align-items:flex-end;gap:2px;height:20px}
+.mesh-bars i{width:3px;background:var(--cyan);border-radius:1px;opacity:.85;animation:mb 1.8s ease-in-out infinite}
+.mesh-bars i:nth-child(1){height:6px;animation-delay:0s}
+.mesh-bars i:nth-child(2){height:11px;animation-delay:.2s}
+.mesh-bars i:nth-child(3){height:16px;animation-delay:.4s}
+.mesh-bars i:nth-child(4){height:20px;animation-delay:.6s}
+@keyframes mb{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ─── body grid ─── */
+.body{display:grid;grid-template-columns:252px 1fr 336px;gap:8px;min-height:0}
+
+.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  display:flex;flex-direction:column;min-height:0;overflow:hidden;
+}
+.ph{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 11px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#111a29,#0c1420);flex:none;
+}
+.ph h2{font-size:10.5px;font-weight:600;letter-spacing:.19em;color:var(--ink-2);text-transform:uppercase}
+.ph .tag{font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.08em}
+.pb{padding:11px;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#22334d transparent}
+.pb::-webkit-scrollbar{width:6px}
+.pb::-webkit-scrollbar-thumb{background:#22334d;border-radius:3px}
+
+/* ─── left rail ─── */
+.rail{display:flex;flex-direction:column;gap:8px;min-height:0}
+.rail .panel:last-child{flex:1}
+
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.kpi{background:var(--panel-2);padding:10px 11px}
+.kpi .lab{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-3);margin-bottom:5px}
+.kpi .num{font-family:var(--mono);font-size:19px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .sub{font-family:var(--mono);font-size:9px;color:var(--ink-3);margin-top:3px}
+
+.ai-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.ai-row:last-of-type{border-bottom:0}
+.ai-led{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex:none;box-shadow:0 0 7px var(--cyan);animation:blink 2s steps(1) infinite}
+.ai-led.w{background:var(--amber);box-shadow:0 0 7px var(--amber)}
+.ai-nm{flex:1;min-width:0}
+.ai-nm b{display:block;font-size:11.5px;font-weight:600;letter-spacing:.02em}
+.ai-nm span{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);letter-spacing:.05em}
+.ai-v{font-family:var(--mono);font-size:11px;color:var(--cyan);font-variant-numeric:tabular-nums;text-align:right}
+.ai-v small{display:block;font-size:8px;color:var(--ink-3)}
+
+.load-lab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.08em;margin:8px 0 4px}
+.load-lab b{color:var(--ink-2);font-weight:500}
+.bar{height:4px;background:#101a2a;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+
+/* ─── map ─── */
+.map-wrap{position:relative;flex:1;min-height:0;background:#060b13;overflow:hidden}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block}
+.map-legend{
+  position:absolute;left:11px;bottom:11px;z-index:4;
+  background:#080d16e8;border:1px solid var(--line);border-radius:3px;
+  padding:9px 11px;display:grid;grid-template-columns:auto auto;gap:5px 14px;
+  backdrop-filter:blur(3px);
+}
+.lg{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;color:var(--ink-2);letter-spacing:.06em}
+.lg i{width:9px;height:9px;flex:none;display:block}
+.map-scale{
+  position:absolute;right:11px;bottom:11px;z-index:4;
+  font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.08em;text-align:right;
+}
+.map-scale .ruler{height:5px;border:1px solid var(--ink-3);border-top:0;margin-bottom:3px;width:78px;margin-left:auto}
+.map-crosshair{
+  position:absolute;top:11px;right:11px;z-index:4;text-align:right;
+  font-family:var(--mono);font-size:9.5px;color:var(--ink-2);letter-spacing:.07em;line-height:1.55;
+  background:#080d16d0;border:1px solid var(--line);border-radius:3px;padding:7px 10px;
+}
+.map-crosshair b{color:var(--cyan);font-weight:500}
+
+/* map svg element styles */
+.grid-l{stroke:#132038;stroke-width:.6}
+.grid-major{stroke:#1b2c48;stroke-width:.9}
+.bldg{fill:#0e1727;stroke:#1d2d47;stroke-width:.8}
+.bldg.dmg{fill:#181320;stroke:#3a2740}
+.road{stroke:#16233a;fill:none;stroke-linecap:round}
+.river{fill:#0d2136;opacity:.75}
+
+.pin{cursor:default}
+.pin-drop{animation:drop .55s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes drop{
+  0%{transform:translateY(-26px) scale(.4);opacity:0}
+  60%{opacity:1}
+  100%{transform:translateY(0) scale(1);opacity:1}
+}
+.pulse{animation:pr 2.4s ease-out infinite}
+@keyframes pr{0%{r:7;opacity:.85;stroke-width:1.6}100%{r:26;opacity:0;stroke-width:.4}}
+.pin-lab{font-family:var(--mono);font-size:8.5px;letter-spacing:.04em;fill:#a9f5ea}
+.pin-lab .c{fill:#eafffb;font-weight:600}
+.pin-box{fill:#04140fe0;stroke:#32e2d055;stroke-width:.7}
+
+.hz-lab{font-family:var(--mono);font-size:8px;letter-spacing:.09em}
+.drone-g .rotor{animation:spin .35s linear infinite;transform-origin:center;transform-box:fill-box}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mesh-link{stroke:var(--cyan);stroke-width:1;stroke-dasharray:5 5;opacity:.42;animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-20}}
+.scan-cone{fill:url(#coneGrad);opacity:.5}
+.sweep{transform-origin:center;transform-box:fill-box;animation:sweep 4.2s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.trail{stroke:#32e2d0;stroke-width:.9;fill:none;opacity:.2;stroke-dasharray:2 4}
+
+/* ─── alert feed ─── */
+.feed{display:flex;flex-direction:column;gap:0;padding:0;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#22334d transparent}
+.feed::-webkit-scrollbar{width:6px}
+.feed::-webkit-scrollbar-thumb{background:#22334d;border-radius:3px}
+.al{
+  display:grid;grid-template-columns:3px 1fr;gap:0;
+  border-bottom:1px solid var(--line-soft);
+  animation:slidein .45s cubic-bezier(.2,.9,.3,1) both;
+}
+@keyframes slidein{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.al-bar{background:var(--ink-3)}
+.al-in{padding:8px 11px 9px;min-width:0}
+.al-top{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.al-p{
+  font-family:var(--mono);font-size:8.5px;font-weight:600;letter-spacing:.13em;
+  padding:2px 6px;border-radius:2px;
+}
+.al-src{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);letter-spacing:.07em}
+.al-t{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+.al-m{font-size:12px;line-height:1.45;color:var(--ink);letter-spacing:.01em}
+.al-meta{font-family:var(--mono);font-size:9px;color:var(--ink-3);margin-top:5px;letter-spacing:.05em;display:flex;gap:10px;flex-wrap:wrap}
+.al-meta b{color:var(--ink-2);font-weight:500}
+
+.al.crit .al-bar{background:var(--red)}
+.al.crit .al-p{background:#ff3d5720;color:var(--red)}
+.al.crit .al-in{background:linear-gradient(90deg,#ff3d570e,transparent 60%)}
+.al.high .al-bar{background:var(--amber)}
+.al.high .al-p{background:#f5a52420;color:var(--amber)}
+.al.med .al-bar{background:var(--blue)}
+.al.med .al-p{background:#4a90e220;color:var(--blue)}
+
+/* ─── telemetry strip ─── */
+.tel{display:grid;grid-template-columns:repeat(3,1fr) 246px;gap:8px}
+.tcard{
+  background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  padding:9px 12px;display:flex;flex-direction:column;gap:8px;
+}
+.tcard.off{opacity:.55;border-color:#2a1f2a}
+.t-top{display:flex;align-items:center;gap:9px}
+.t-id{display:flex;align-items:center;gap:7px}
+.t-id .sq{
+  width:22px;height:22px;border:1px solid var(--cyan);border-radius:2px;
+  display:grid;place-items:center;color:var(--cyan);
+  font-family:var(--mono);font-size:10px;font-weight:600;
+}
+.t-id b{font-size:12.5px;font-weight:600;letter-spacing:.06em;display:block;line-height:1.15}
+.t-id span{font-family:var(--mono);font-size:8.5px;color:var(--ink-3);letter-spacing:.06em}
+.t-mode{margin-left:auto;font-family:var(--mono);font-size:8.5px;letter-spacing:.11em;color:var(--cyan);
+  border:1px solid #32e2d040;padding:2px 6px;border-radius:2px;background:#32e2d00d}
+.t-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.tm{background:var(--panel-2);padding:7px 8px}
+.tm .l{font-family:var(--mono);font-size:8px;letter-spacing:.12em;color:var(--ink-3);margin-bottom:3px}
+.tm .v{font-family:var(--mono);font-size:13.5px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.tm .v small{font-size:8.5px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+.batt{display:flex;align-items:center;gap:5px}
+.batt-sh{width:20px;height:9px;border:1px solid var(--ink-3);border-radius:1.5px;padding:1px;position:relative;flex:none}
+.batt-sh::after{content:"";position:absolute;right:-3px;top:2.5px;width:2px;height:3px;background:var(--ink-3)}
+.batt-f{height:100%;background:var(--cyan);border-radius:.5px;transition:width .8s linear}
+.sig{display:flex;align-items:flex-end;gap:1.5px;height:11px}
+.sig i{width:2.5px;background:#26374f;border-radius:.5px}
+.sig i.on{background:var(--cyan)}
+.sig i:nth-child(1){height:3px}.sig i:nth-child(2){height:5.5px}
+.sig i:nth-child(3){height:8px}.sig i:nth-child(4){height:11px}
+
+.mesh-card{
+  background:linear-gradient(160deg,#0d1522,#0a0f19);
+  border:1px solid #1f3a52;border-radius:3px;padding:9px 12px;
+  display:flex;flex-direction:column;gap:7px;
+}
+.mesh-h{display:flex;align-items:center;justify-content:space-between}
+.mesh-h b{font-size:10.5px;letter-spacing:.17em;color:var(--ink-2);font-weight:600}
+.mesh-nodes{display:flex;align-items:center;gap:0;padding:3px 0}
+.mn{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--cyan);flex:none;
+  display:grid;place-items:center;font-family:var(--mono);font-size:7px;color:var(--cyan);background:#071018;z-index:2}
+.mn.base{border-color:var(--amber);color:var(--amber)}
+.mlk{flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--cyan) 0 4px,transparent 4px 8px);opacity:.6;
+  animation:mflow .8s linear infinite;background-size:8px 1px}
+@keyframes mflow{to{background-position:8px 0}}
+.mesh-st{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--ink-3);letter-spacing:.06em}
+.mesh-st b{color:var(--cyan);font-weight:500;font-variant-numeric:tabular-nums}
+
+@media (prefers-reduced-motion:reduce){
+  .pulse,.mark::after,.mesh-bars i,.sweep,.drone-g .rotor{animation:none}
+  .mesh-link,.mlk{animation:none}
+  .al,.pin-drop{animation-duration:.01s}
+}
+@media (max-width:1500px){
+  .body{grid-template-columns:224px 1fr 306px}
+  .hdr-mission .val em{display:none}
+}
+@media (max-width:1240px){
+  .hdr-mission{display:none}
+  .stat{padding:10px 12px}
+}
+</style>
+
+<div class="console">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="hdr">
+    <div class="hdr-brand">
+      <div class="mark">
+        <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4.5"/></svg>
+      </div>
+      <div>
+        <div class="brand-t">SANJEEVANI</div>
+        <div class="brand-s">AUTONOMOUS SAR SWARM</div>
+      </div>
+    </div>
+
+    <div class="hdr-mission">
+      <div class="lab">ACTIVE MISSION</div>
+      <div class="val">OP CHAMOLI-7 &nbsp;<em>·&nbsp; Flash Flood / Landslide &nbsp;·&nbsp; NDRF Bn-3</em></div>
+    </div>
+
+    <div class="stat stat-clk"><div class="lab">MISSION TIME</div><div class="num" id="clk">00:00:00</div></div>
+    <div class="stat stat-n"><div class="lab">SURVIVORS</div><div class="num cy" id="kSurv">0</div></div>
+    <div class="stat stat-n"><div class="lab">HAZARDS</div><div class="num am" id="kHaz">0</div></div>
+    <div class="stat stat-n"><div class="lab">CRITICAL</div><div class="num rd" id="kCrit">0</div></div>
+
+    <div class="stat" style="min-width:auto;gap:5px">
+      <span class="pill pill-auto"><span class="dot bl"></span>AUTONOMOUS</span>
+      <span class="pill pill-arm"><span class="dot"></span>LAWNMOWER SWEEP</span>
+    </div>
+
+    <div class="hdr-offline">
+      <div class="off-i">
+        <svg viewBox="0 0 24 24"><path d="M2 8.8a16 16 0 0 1 20 0M5.5 12.4a11 11 0 0 1 13 0M9 16a6 6 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.1" fill="currentColor" stroke="none"/><path d="M3 3l18 18" stroke="#ff3d57"/></svg>
+      </div>
+      <div class="off-txt">
+        <div class="off-a">OFFLINE — MESH RELAY ACTIVE</div>
+        <div class="off-b">NO WAN · LoRa 865MHz · <span id="hops">3</span> HOPS TO GROUND</div>
+      </div>
+      <div class="mesh-bars"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </header>
+
+  <!-- ═══ BODY ═══ -->
+  <div class="body">
+
+    <!-- LEFT RAIL -->
+    <div class="rail">
+      <section class="panel">
+        <div class="ph"><h2>Sortie Summary</h2><span class="tag">LIVE</span></div>
+        <div class="kpis">
+          <div class="kpi"><div class="lab">AREA SWEPT</div><div class="num" id="kArea">0.00</div><div class="sub">km² of 4.20</div></div>
+          <div class="kpi"><div class="lab">FRAMES</div><div class="num" id="kFrames">0</div><div class="sub">inferred on-device</div></div>
+          <div class="kpi"><div class="lab">MAP TILES</div><div class="num" id="kTiles">0</div><div class="sub">SLAM meshed</div></div>
+          <div class="kpi"><div class="lab">RELAYED</div><div class="num" id="kPkts">0</div><div class="sub">packets via mesh</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="ph"><h2>Edge AI Stack</h2><span class="tag">RPi 5 · 8GB</span></div>
+        <div class="pb">
+          <div class="ai-row">
+            <span class="ai-led"></span>
+            <span class="ai-nm"><b>YOLOv8n-SAR</b><span>PERSON / LIMB DETECT</span></span>
+            <span class="ai-v" id="fpsYolo">18.4<small>FPS</small></span>
+          </div>
+          <div class="ai-row">
+            <span class="ai-led"></span>
+            <span class="ai-nm"><b>RTAB-SLAM</b><span>LiDAR + RGB ODOMETRY</span></span>
+            <span class="ai-v" id="fpsSlam">11.2<small>Hz</small></span>
+          </div>
+          <div class="ai-row">
+            <span class="ai-led w"></span>
+            <span class="ai-nm"><b>HazardNet-v3</b><span>FIRE / WATER / DEBRIS</span></span>
+            <span class="ai-v" id="fpsHaz">7.6<small>FPS</small></span>
+          </div>
+          <div class="ai-row">
+            <span class="ai-led"></span>
+            <span class="ai-nm"><b>Sensor Fusion</b><span>THERMAL × RGB × IMU</span></span>
+            <span class="ai-v" id="fpsFus">30.0<small>Hz</small></span>
+          </div>
+
+          <div class="load-lab"><span>CPU · CORTEX-A76 ×4</span><b><span id="cpuV">62</span>%</b></div>
+          <div class="bar"><i id="cpuB" style="width:62%;background:linear-gradient(90deg,#0e8f83,#32e2d0)"></i></div>
+
+          <div class="load-lab"><span>NPU · HAILO-8L</span><b><span id="npuV">71</span>%</b></div>
+          <div class="bar"><i id="npuB" style="width:71%;background:linear-gradient(90deg,#0e8f83,#32e2d0)"></i></div>
+
+          <div class="load-lab"><span>SoC TEMP</span><b><span id="tmpV">58.2</span>°C</b></div>
+          <div class="bar"><i id="tmpB" style="width:58%;background:linear-gradient(90deg,#8a6a1a,#f5a524)"></i></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- MAP -->
+    <section class="panel">
+      <div class="ph">
+        <h2>Disaster Zone · Sector 7</h2>
+        <span class="tag">SLAM OCCUPANCY GRID · 30.5512°N 79.3204°E</span>
+      </div>
+      <div class="map-wrap">
+        <svg id="map" viewBox="0 0 1000 660" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#32e2d0" stop-opacity=".30"/>
+              <stop offset="100%" stop-color="#32e2d0" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="rivGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0f2f4d"/>
+              <stop offset="100%" stop-color="#0a1e33"/>
+            </linearGradient>
+            <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softglow" x="-70%" y="-70%" width="240%" height="240%">
+              <feGaussianBlur stdDeviation="6" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="1000" height="660" fill="#060b13"/>
+          <g id="gGrid"></g>
+
+          <!-- terrain -->
+          <g id="gTerrain">
+            <path class="river" fill="url(#rivGrad)"
+              d="M-10 96 C 150 128, 236 208, 330 250 C 430 296, 520 300, 610 348 C 700 396, 812 430, 1010 452 L1010 520 C 800 496, 690 462, 596 414 C 500 366, 414 360, 312 312 C 210 264, 120 190, -10 158 Z"/>
+            <path fill="none" stroke="#2a6a96" stroke-width="1" opacity=".5"
+              d="M-10 96 C 150 128, 236 208, 330 250 C 430 296, 520 300, 610 348 C 700 396, 812 430, 1010 452"/>
+            <path fill="none" stroke="#2a6a96" stroke-width="1" opacity=".35"
+              d="M-10 158 C 120 190, 210 264, 312 312 C 414 360, 500 366, 596 414 C 690 462, 800 496, 1010 520"/>
+            <text x="120" y="200" class="hz-lab" fill="#3d7fa8" opacity=".8" transform="rotate(19 120 200)">ALAKNANDA · BREACHED CHANNEL</text>
+          </g>
+
+          <g id="gRoads"></g>
+          <g id="gBldg"></g>
+          <g id="gSect"></g>
+          <g id="gTrails"></g>
+          <g id="gHaz"></g>
+          <g id="gPins"></g>
+          <g id="gMesh"></g>
+          <g id="gDrones"></g>
+        </svg>
+
+        <div class="map-crosshair">
+          CURSOR &nbsp;<b id="ccLat">30.5512° N</b><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b id="ccLon">79.3204° E</b><br>
+          <span style="color:var(--ink-3)">GRID <b id="ccGrid" style="color:var(--ink-2)">D-4</b> · ELEV <b id="ccEl" style="color:var(--ink-2)">1874 m</b></span>
+        </div>
+
+        <div class="map-legend">
+          <div class="lg"><i style="background:#32e2d0;border-radius:50%;box-shadow:0 0 6px #32e2d0"></i>SURVIVOR</div>
+          <div class="lg"><i style="background:#ff5a2e"></i>FIRE</div>
+          <div class="lg"><i style="background:#3b9dff"></i>FLOOD</div>
+          <div class="lg"><i style="background:#f5a524"></i>DEBRIS</div>
+          <div class="lg"><i style="background:#c86bff"></i>STRUCTURAL</div>
+          <div class="lg"><i style="background:#ffe14d"></i>ELECTRICAL</div>
+        </div>
+
+        <div class="map-scale">
+          <div class="ruler"></div>250 m
+        </div>
+      </div>
+    </section>
+
+    <!-- ALERT FEED -->
+    <section class="panel">
+      <div class="ph">
+        <h2>Alert Feed</h2>
+        <span class="tag"><span id="alCount">0</span> EVENTS · AUTO</span>
+      </div>
+      <div class="feed" id="feed"></div>
+    </section>
+  </div>
+
+  <!-- ═══ TELEMETRY STRIP ═══ -->
+  <div class="tel" id="tel">
+    <div class="mesh-card">
+      <div class="mesh-h">
+        <b>MESH TOPOLOGY</b>
+        <span class="pill pill-auto" style="font-size:8.5px"><span class="dot bl"></span>RELAYING</span>
+      </div>
+      <div class="mesh-nodes">
+        <span class="mn">D1</span><span class="mlk"></span>
+        <span class="mn">D2</span><span class="mlk"></span>
+        <span class="mn">D3</span><span class="mlk"></span>
+        <span class="mn base">GS</span>
+      </div>
+      <div class="mesh-st"><span>LINK RSSI</span><b id="rssi">-71 dBm</b></div>
+      <div class="mesh-st"><span>THROUGHPUT</span><b id="thru">2.4 kbps</b></div>
+      <div class="mesh-st"><span>QUEUE / LOSS</span><b id="qloss">4 pkt / 0.8%</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), NS="http://www.w3.org/2000/svg";
+const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const R=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const pad=n=>String(n).padStart(2,"0");
+
+/* ── map geo mapping: svg 1000x660 → lat/lon around Chamoli ── */
+const LAT0=30.5602, LON0=79.3108, LAT_SPAN=-0.0180, LON_SPAN=0.0242;
+const toGeo=(x,y)=>({
+  lat:(LAT0+LAT_SPAN*(y/660)).toFixed(4),
+  lon:(LON0+LON_SPAN*(x/1000)).toFixed(4)
+});
+const toGrid=(x,y)=>"ABCDEFGH"[Math.min(7,Math.floor(x/125))]+"-"+(Math.floor(y/110)+1);
+
+/* ═══ static map furniture ═══ */
+(function buildGrid(){
+  const g=$("#gGrid");
+  for(let x=0;x<=1000;x+=41.66)
+    g.appendChild(el("line",{x1:x,y1:0,x2:x,y2:660,class:x%125<1?"grid-major":"grid-l"}));
+  for(let y=0;y<=660;y+=41.25)
+    g.appendChild(el("line",{x1:0,y1:y,x2:1000,y2:y,class:y%110<1?"grid-major":"grid-l"}));
+
+  const s=$("#gSect");
+  for(let c=0;c<8;c++)for(let r=0;r<6;r++){
+    const t=el("text",{x:c*125+6,y:r*110+14,fill:"#243c5c","font-family":"var(--mono)","font-size":9,"letter-spacing":"1"});
+    t.textContent="ABCDEFGH"[c]+"-"+(r+1);
+    s.appendChild(t);
+  }
+})();
+
+(function buildRoads(){
+  const g=$("#gRoads");
+  const roads=[
+    ["M 0 566 C 180 552, 300 512, 452 520 C 620 529, 760 574, 1000 560",3.4],
+    ["M 452 520 C 470 430, 486 344, 520 236 C 546 152, 566 84, 578 0",2.6],
+    ["M 0 300 C 120 292, 190 268, 262 232",2.0],
+    ["M 700 660 C 716 566, 742 500, 800 452 C 858 404, 920 388, 1000 384",2.4],
+    ["M 262 232 C 340 246, 384 300, 452 520",1.6]
+  ];
+  roads.forEach(([d,w])=>{
+    g.appendChild(el("path",{d,class:"road","stroke-width":w+2.4,stroke:"#0d1728"}));
+    g.appendChild(el("path",{d,class:"road","stroke-width":w}));
+  });
+  const t=el("text",{x:150,y:558,class:"hz-lab",fill:"#2f4a6b",opacity:".85"});
+  t.textContent="NH-7 BADRINATH RD — SEVERED @ KM 214";
+  g.appendChild(t);
+})();
+
+(function buildBldgs(){
+  const g=$("#gBldg");
+  const B=[
+    [72,352,58,44,0],[142,368,40,34,0],[196,340,52,40,1],[60,428,46,36,0],
+    [120,436,64,30,0],[214,420,38,48,1],[276,392,50,36,0],[300,470,44,34,0],
+    [372,556,56,40,1],[440,580,42,32,0],[506,556,60,44,0],[578,586,38,30,0],
+    [640,540,52,38,1],[706,566,46,34,0],[772,532,58,42,0],[848,570,40,32,0],
+    [612,236,48,36,0],[672,268,54,40,1],[744,232,42,34,0],[812,276,56,42,0],
+    [880,224,44,36,0],[900,320,50,38,1],[820,352,42,30,0],[736,336,52,40,0],
+    [252,120,46,34,0],[318,86,52,40,0],[386,132,40,32,1],[452,92,48,36,0],
+    [86,60,54,40,0],[160,104,42,32,0],[520,168,44,34,0]
+  ];
+  B.forEach(([x,y,w,h,d])=>{
+    const r=el("rect",{x,y,width:w,height:h,rx:1,class:"bldg"+(d?" dmg":"")});
+    r.setAttribute("transform","rotate("+R(-3,3).toFixed(1)+" "+(x+w/2)+" "+(y+h/2)+")");
+    g.appendChild(r);
+    if(d){
+      const c=el("path",{d:`M ${x+w*.2} ${y+h*.15} l ${w*.25} ${h*.4} l ${-w*.14} ${h*.16} l ${w*.3} ${h*.25}`,
+        stroke:"#5a3a6a",fill:"none","stroke-width":".9",opacity:".85"});
+      g.appendChild(c);
+    }
+  });
+})();
+
+/* ═══ hazards ═══ */
+const HZ_DEF={
+  fire:{c:"#ff5a2e",n:"FIRE",g:"M0,-8 C4,-3 7,0 5,4 C4,7 -4,7 -5,4 C-7,0 -4,-3 0,-8 Z"},
+  flood:{c:"#3b9dff",n:"FLOOD",g:"M-7,-1 q3.5,-4 7,0 t7,0 M-7,4 q3.5,-4 7,0 t7,0"},
+  debris:{c:"#f5a524",n:"DEBRIS",g:"M-7,5 l4,-9 l4,5 l3,-7 l4,11 Z"},
+  structural:{c:"#c86bff",n:"STRUCT",g:"M0,-8 L7,5 L-7,5 Z M0,-3 L0,1 M0,3 L0,3.6"},
+  electrical:{c:"#ffe14d",n:"ELEC",g:"M2,-8 L-5,1 L0,1 L-2,8 L5,-1 L0,-1 Z"}
+};
+const HAZARDS=[
+  {x:646,y:262,t:"fire",   lab:"MARKET BLK · SPREADING",  sev:"CRITICAL", d:2600},
+  {x:352,y:272,t:"flood",  lab:"BREACH · 2.4 m DEPTH",    sev:"HIGH",     d:5200},
+  {x:206,y:414,t:"debris", lab:"SLIDE DEBRIS · RD BLOCK", sev:"MEDIUM",   d:9000},
+  {x:520,y:552,t:"structural",lab:"SLAB OVERHANG · UNSAFE",sev:"CRITICAL",d:14000},
+  {x:806,y:540,t:"electrical",lab:"LIVE 11kV LINE DOWN",  sev:"CRITICAL", d:21000},
+  {x:748,y:334,t:"debris", lab:"COLLAPSED SPAN",          sev:"MEDIUM",   d:28000},
+  {x:296,y:112,t:"flood",  lab:"SATURATED SLOPE",         sev:"HIGH",     d:35000}
+];
+let hazCount=0;
+function addHazard(h){
+  const D=HZ_DEF[h.t], outer=el("g",{transform:`translate(${h.x},${h.y})`});
+  const g=el("g",{class:"pin-drop"}); outer.appendChild(g);
+  g.appendChild(el("circle",{r:15,fill:D.c,opacity:".08"}));
+  g.appendChild(el("path",{d:"M-11,-11 L-11,-6 M-11,-11 L-6,-11 M11,-11 L11,-6 M11,-11 L6,-11 M-11,11 L-11,6 M-11,11 L-6,11 M11,11 L11,6 M11,11 L6,11",
+    stroke:D.c,fill:"none","stroke-width":"1.3",opacity:".9"}));
+  g.appendChild(el("path",{d:D.g,fill:h.t==="flood"||h.t==="structural"?"none":D.c,
+    stroke:D.c,"stroke-width":h.t==="flood"||h.t==="structural"?"1.6":".6",
+    "stroke-linecap":"round",filter:"url(#glow)"}));
+  const bw=D.n.length*5.4+h.lab.length*4.3+14;
+  g.appendChild(el("rect",{x:-bw/2,y:17,width:bw,height:13,rx:1.5,fill:"#0a0d14e0",stroke:D.c+"55","stroke-width":".7"}));
+  const t=el("text",{x:0,y:26,class:"hz-lab",fill:D.c,"text-anchor":"middle"});
+  t.textContent=D.n+" · "+h.lab;
+  g.appendChild(t);
+  $("#gHaz").appendChild(outer);
+  hazCount++; $("#kHaz").textContent=hazCount;
+  pushAlert(h.sev, "HAZARD", `${D.n} detected — ${h.lab.toLowerCase()}`,
+    {grid:toGrid(h.x,h.y), pos:h.x, posy:h.y, conf:R(88,98).toFixed(1), src:"HazardNet-v3"});
+}
+
+/* ═══ survivors ═══ */
+const SURV=[
+  {x:118,y:392,c:96.4,n:"1 adult · prone, thermal 34.1°C",   d:3400},
+  {x:390,y:566,c:91.8,n:"2 persons · sub-rubble void",        d:8200},
+  {x:688,y:280,c:88.2,n:"1 adult · waving, mobile",           d:13000},
+  {x:246,y:432,c:94.7,n:"3 persons · rooftop, stranded",      d:18500},
+  {x:786,y:262,c:79.5,n:"1 child · partial occlusion",        d:24000},
+  {x:560,y:576,c:97.1,n:"2 adults · vehicle cabin",           d:30000},
+  {x:322,y:130,c:85.3,n:"1 adult · slope ledge, immobile",    d:36500},
+  {x:864,y:566,c:92.6,n:"4 persons · shelter cluster",        d:42000},
+  {x:462,y:214,c:83.9,n:"1 adult · water's edge",             d:48000},
+  {x:702,y:582,c:95.2,n:"2 persons · under collapsed awning", d:54000}
+];
+let survCount=0, critCount=0;
+function addSurvivor(s,i){
+  const geo=toGeo(s.x,s.y), grid=toGrid(s.x,s.y), id="SV-"+pad(i+1);
+  const outer=el("g",{transform:`translate(${s.x},${s.y})`,class:"pin"});
+  const g=el("g",{class:"pin-drop"}); outer.appendChild(g);
+
+  const ring=el("circle",{r:7,fill:"none",stroke:"#32e2d0","stroke-width":"1.6",class:"pulse"});
+  g.appendChild(ring);
+  g.appendChild(el("circle",{r:14,fill:"#32e2d0",opacity:".07"}));
+  g.appendChild(el("circle",{r:6.4,fill:"none",stroke:"#32e2d0","stroke-width":"1.5",filter:"url(#glow)"}));
+  g.appendChild(el("circle",{r:2.6,fill:"#eafffb",filter:"url(#glow)"}));
+  g.appendChild(el("path",{d:"M0,-11 L0,-7 M0,7 L0,11 M-11,0 L-7,0 M7,0 L11,0",
+    stroke:"#32e2d0","stroke-width":"1.2","stroke-linecap":"round",opacity:".9"}));
+
+  // label card
+  const up = s.y>360, lx = s.x>820?-96:8, ly = up?-46:14;
+  const card=el("g",{transform:`translate(${lx},${ly})`});
+  card.appendChild(el("rect",{x:0,y:0,width:92,height:34,rx:2,class:"pin-box"}));
+  card.appendChild(el("rect",{x:0,y:0,width:2,height:34,fill:"#32e2d0"}));
+  const l1=el("text",{x:7,y:11.5,class:"pin-lab"});
+  l1.innerHTML=`<tspan class="c">${id}</tspan> · ${grid}`;
+  const l2=el("text",{x:7,y:21,class:"pin-lab"}); l2.textContent=`${geo.lat}N ${geo.lon}E`;
+  const l3=el("text",{x:7,y:30.5,class:"pin-lab"});
+  l3.innerHTML=`<tspan fill="#32e2d0">${s.c.toFixed(1)}%</tspan> · <tspan fill="#6f8aa8">${stamp()}</tspan>`;
+  card.appendChild(l1);card.appendChild(l2);card.appendChild(l3);
+  card.appendChild(el("line",{x1:lx>0?0:92,y1:up?34:0,x2:-lx,y2:-ly,stroke:"#32e2d0","stroke-width":".7",opacity:".45"}));
+  g.appendChild(card);
+
+  $("#gPins").appendChild(outer);
+  survCount++; $("#kSurv").textContent=survCount;
+
+  const sev = s.c>=90?"CRITICAL":(s.c>=85?"HIGH":"MEDIUM");
+  pushAlert(sev,"DETECT",`Survivor ${id} — ${s.n}`,
+    {grid,lat:geo.lat,lon:geo.lon,conf:s.c.toFixed(1),src:"YOLOv8n-SAR"});
+}
+
+/* ═══ alert feed ═══ */
+let alertN=0;
+function stamp(){const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());}
+function pushAlert(sev,src,msg,meta){
+  const cls={CRITICAL:"crit",HIGH:"high",MEDIUM:"med"}[sev];
+  const a=document.createElement("div"); a.className="al "+cls;
+  const m=meta||{};
+  const bits=[];
+  if(m.grid) bits.push(`GRID <b>${m.grid}</b>`);
+  if(m.lat)  bits.push(`<b>${m.lat}N ${m.lon}E</b>`);
+  if(m.conf) bits.push(`CONF <b>${m.conf}%</b>`);
+  if(m.src)  bits.push(`<b>${m.src}</b>`);
+  if(m.hop)  bits.push(`RELAY <b>${m.hop}</b>`);
+  a.innerHTML=
+    `<div class="al-bar"></div><div class="al-in">
+      <div class="al-top">
+        <span class="al-p">${sev}</span>
+        <span class="al-src">${src}</span>
+        <span class="al-t">${stamp()}</span>
+      </div>
+      <div class="al-m">${msg}</div>
+      <div class="al-meta">${bits.join("")}</div>
+    </div>`;
+  const f=$("#feed");
+  f.insertBefore(a,f.firstChild);
+  while(f.children.length>26) f.removeChild(f.lastChild);
+  alertN++; $("#alCount").textContent=alertN;
+  if(sev==="CRITICAL"){critCount++;$("#kCrit").textContent=critCount;}
+}
+
+/* ambient chatter */
+const CHATTER=[
+  ["MEDIUM","SLAM",  "Loop closure accepted — drift corrected 0.42 m",             {src:"RTAB-SLAM"}],
+  ["MEDIUM","MESH",  "Map tile batch relayed to ground station",                   {hop:"D2→D1→GS"}],
+  ["HIGH",  "NAV",   "Wind gust 14.2 m/s — D2 holding station, gimbal stabilised", {src:"Pixhawk"}],
+  ["MEDIUM","MESH",  "Peer discovery — D3 link re-acquired, RSSI -68 dBm",         {hop:"D3→D2"}],
+  ["MEDIUM","THERM", "Thermal anomaly 31.8°C — below survivor threshold, logged",  {src:"Sensor Fusion"}],
+  ["HIGH",  "POWER", "D3 battery below 40% — RTL threshold in 6 min",              {src:"Pixhawk"}],
+  ["MEDIUM","SLAM",  "Occupancy grid extended — 128 new voxels meshed",            {src:"RTAB-SLAM"}],
+  ["CRITICAL","HAZARD","Fire front advancing 0.6 m/s toward survivor cluster",     {src:"HazardNet-v3"}],
+  ["MEDIUM","MESH",  "Store-and-forward flush — 14 queued packets delivered",      {hop:"D1→GS"}],
+  ["HIGH",  "DETECT","Low-confidence signature 61% — re-tasking D1 for second pass",{src:"YOLOv8n-SAR"}],
+  ["MEDIUM","NAV",   "Waypoint 47 reached — lawnmower leg 12 of 20",               {src:"Pixhawk"}],
+  ["CRITICAL","MEDIC","Triage priority raised — SV-02 vitals suggest crush injury", {src:"Ground Station"}],
+  ["MEDIUM","GPS",   "GNSS fix RTK-FLOAT — 14 sats, HDOP 0.8",                     {src:"u-blox F9P"}],
+  ["HIGH",  "MESH",  "Ground link degraded — switching to D3 as relay head",       {hop:"D2→D3→GS"}]
+];
+function chatter(){
+  const c=pick(CHATTER);
+  const m=Object.assign({},c[3]);
+  if(!m.grid&&Math.random()>.4) m.grid=pick(["A-3","B-4","C-2","D-4","E-5","F-3","G-5","H-2"]);
+  pushAlert(c[0],c[1],c[2],m);
+}
+
+/* ═══ drones ═══ */
+const DRONES=[
+  {id:"D1",nm:"GARUD-01",path:"M 90 300 C 210 246, 300 402, 420 356 C 540 310, 596 470, 700 430 C 800 392, 880 300, 940 250",
+   batt:78,alt:62,sats:16,sig:4,mode:"SEARCH",dur:52},
+  {id:"D2",nm:"GARUD-02",path:"M 880 560 C 760 600, 660 500, 540 546 C 420 592, 340 480, 220 528 C 140 560, 90 590, 60 610",
+   batt:64,alt:48,sats:14,sig:4,mode:"SEARCH",dur:61},
+  {id:"D3",nm:"GARUD-03",path:"M 500 110 C 620 60, 720 170, 830 130 C 900 104, 940 160, 950 210 C 930 300, 820 330, 700 300 C 580 270, 540 200, 500 110",
+   batt:41,alt:74,sats:12,sig:3,mode:"RELAY",dur:44}
+];
+const BASE={x:948,y:626};
+
+const trailsG=$("#gTrails"), dronesG=$("#gDrones"), meshG=$("#gMesh");
+DRONES.forEach(d=>{
+  const p=el("path",{d:d.path,class:"trail"});
+  trailsG.appendChild(p);
+  d._p=p; d._len=p.getTotalLength();
+
+  const g=el("g",{class:"drone-g"});
+  // scan cone
+  g.appendChild(el("circle",{r:56,class:"scan-cone"}));
+  const sw=el("g",{class:"sweep"});
+  sw.appendChild(el("path",{d:"M0,0 L52,-16 A54 54 0 0 1 52,16 Z",fill:"#32e2d0",opacity:".16"}));
+  g.appendChild(sw);
+  // body
+  g.appendChild(el("circle",{r:19,fill:"none",stroke:"#32e2d0","stroke-width":".8",opacity:".35","stroke-dasharray":"3 3"}));
+  const b=el("g",{});
+  b.appendChild(el("path",{d:"M-9,-9 L9,9 M9,-9 L-9,9",stroke:"#32e2d0","stroke-width":"1.8","stroke-linecap":"round"}));
+  [[-9,-9],[9,-9],[-9,9],[9,9]].forEach(([rx,ry])=>{
+    b.appendChild(el("circle",{cx:rx,cy:ry,r:4.6,fill:"none",stroke:"#32e2d0","stroke-width":"1",class:"rotor",opacity:".8"}));
+  });
+  b.appendChild(el("rect",{x:-4,y:-4,width:8,height:8,rx:1.5,fill:"#0a1a1c",stroke:"#32e2d0","stroke-width":"1.3"}));
+  b.appendChild(el("circle",{r:1.6,fill:"#eafffb",filter:"url(#glow)"}));
+  g.appendChild(b);
+  // label
+  const lab=el("g",{transform:"translate(14,-22)"});
+  lab.appendChild(el("rect",{x:0,y:0,width:64,height:14,rx:1.5,fill:"#04140fdd",stroke:"#32e2d066","stroke-width":".7"}));
+  const lt=el("text",{x:5,y:10,class:"pin-lab"});
+  lt.innerHTML=`<tspan class="c">${d.nm}</tspan>`;
+  lab.appendChild(lt);
+  g.appendChild(lab);
+
+  d._g=g; dronesG.appendChild(g);
+});
+
+/* mesh links between drones + base */
+const LINKS=[[0,1],[1,2],[0,2]];
+const linkEls=LINKS.map(()=>{const l=el("line",{class:"mesh-link"});meshG.appendChild(l);return l;});
+const baseLink=el("line",{class:"mesh-link","stroke-width":"1.4"}); meshG.appendChild(baseLink);
+
+// base station glyph
+const bg=el("g",{transform:`translate(${BASE.x},${BASE.y})`});
+bg.appendChild(el("circle",{r:30,fill:"#f5a524",opacity:".06"}));
+bg.appendChild(el("path",{d:"M-11,10 L0,-12 L11,10 Z",fill:"none",stroke:"#f5a524","stroke-width":"1.6"}));
+bg.appendChild(el("path",{d:"M0,-12 L0,-19 M-6,-17 A9 9 0 0 1 6,-17 M-10,-21 A15 15 0 0 1 10,-21",
+  fill:"none",stroke:"#f5a524","stroke-width":"1.2",opacity:".85"}));
+bg.appendChild(el("circle",{cy:2,r:2.2,fill:"#f5a524",filter:"url(#glow)"}));
+const bt=el("text",{x:-44,y:26,class:"hz-lab",fill:"#f5a524"});
+bt.textContent="GROUND STATION · NDRF FWD";
+bg.appendChild(bt);
+meshG.appendChild(bg);
+
+/* packet dots along mesh links */
+const PKT_LABELS=["survivor detected","hazard: fire","map tile","telemetry","triage update"];
+let inFlight=0;
+function firePacket(from,to){
+  // rAF pauses on hidden tabs; cap in-flight so packets can never pile up, then resume cleanly
+  if(inFlight>=5) return;
+  inFlight++;
+  const g=el("g",{});
+  const c=el("circle",{r:3.4,fill:"#eafffb",filter:"url(#glow)"});
+  g.appendChild(c);
+  meshG.appendChild(g);
+  const t0=performance.now(), dur=900;
+  (function step(t){
+    const k=Math.min(1,(t-t0)/dur);
+    g.setAttribute("transform",`translate(${from().x+(to().x-from().x)*k},${from().y+(to().y-from().y)*k})`);
+    c.setAttribute("opacity",String(k<.15?k/.15:(k>.85?(1-k)/.15:1)));
+    if(k<1) requestAnimationFrame(step); else { inFlight--; g.remove(); }
+  })(t0);
+}
+
+/* ═══ telemetry cards ═══ */
+const tel=$("#tel");
+DRONES.forEach((d,i)=>{
+  const c=document.createElement("div"); c.className="tcard"; c.id="tc"+i;
+  c.innerHTML=`
+    <div class="t-top">
+      <span class="t-id"><span class="sq">${d.id}</span>
+        <span><b>${d.nm}</b><span>RPi 5 · PIXHAWK 6C · LoRa SX1276</span></span></span>
+      <span class="t-mode" id="md${i}">${d.mode}</span>
+    </div>
+    <div class="t-grid">
+      <div class="tm"><div class="l">BATTERY</div>
+        <div class="v batt"><span class="batt-sh"><span class="batt-f" id="bf${i}" style="width:${d.batt}%"></span></span><span id="bv${i}">${d.batt}<small>%</small></span></div></div>
+      <div class="tm"><div class="l">ALTITUDE</div><div class="v" id="av${i}">${d.alt}<small> m AGL</small></div></div>
+      <div class="tm"><div class="l">GPS</div><div class="v" id="gv${i}" style="font-size:11px">RTK<small> ${d.sats} sv</small></div></div>
+      <div class="tm"><div class="l">MESH SIG</div>
+        <div class="v sig" id="sv${i}"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+    </div>`;
+  tel.insertBefore(c,tel.lastElementChild);
+});
+
+/* ═══ animation loop ═══ */
+const T0=performance.now();
+let frames=0, tiles=0, pkts=0, area=0;
+const pos=DRONES.map(()=>({x:0,y:0}));
+
+function loop(now){
+  const t=(now-T0)/1000;
+  DRONES.forEach((d,i)=>{
+    if(d.dead){ return; }
+    const k=((t/d.dur)%1);
+    const pt=d._p.getPointAtLength(k*d._len);
+    pos[i].x=pt.x; pos[i].y=pt.y;
+    d._g.setAttribute("transform",`translate(${pt.x.toFixed(1)},${pt.y.toFixed(1)})`);
+  });
+  linkEls.forEach((l,i)=>{
+    const [a,b]=LINKS[i];
+    if(DRONES[a].dead||DRONES[b].dead){l.setAttribute("opacity","0");return;}
+    l.setAttribute("opacity","");
+    l.setAttribute("x1",pos[a].x);l.setAttribute("y1",pos[a].y);
+    l.setAttribute("x2",pos[b].x);l.setAttribute("y2",pos[b].y);
+  });
+  baseLink.setAttribute("x1",pos[2].x);baseLink.setAttribute("y1",pos[2].y);
+  baseLink.setAttribute("x2",BASE.x);baseLink.setAttribute("y2",BASE.y);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* mission clock + counters */
+setInterval(()=>{
+  const s=Math.floor((performance.now()-T0)/1000)+742;
+  $("#clk").textContent=pad(Math.floor(s/3600))+":"+pad(Math.floor(s/60)%60)+":"+pad(s%60);
+  frames+=Math.round(R(16,21)); $("#kFrames").textContent=frames.toLocaleString("en-IN");
+  if(Math.random()>.5){tiles+=Math.round(R(1,4)); $("#kTiles").textContent=tiles;}
+  pkts+=Math.round(R(2,7)); $("#kPkts").textContent=pkts;
+  area=Math.min(4.2,area+R(.004,.011)); $("#kArea").textContent=area.toFixed(2);
+},1000);
+
+/* AI stack jitter */
+setInterval(()=>{
+  $("#fpsYolo").innerHTML=R(16.8,19.9).toFixed(1)+"<small>FPS</small>";
+  $("#fpsSlam").innerHTML=R(9.8,12.4).toFixed(1)+"<small>Hz</small>";
+  $("#fpsHaz").innerHTML=R(6.4,8.6).toFixed(1)+"<small>FPS</small>";
+  $("#fpsFus").innerHTML=R(28.5,30).toFixed(1)+"<small>Hz</small>";
+  const cpu=Math.round(R(54,79)), npu=Math.round(R(62,88)), tmp=R(54,67);
+  $("#cpuV").textContent=cpu; $("#cpuB").style.width=cpu+"%";
+  $("#npuV").textContent=npu; $("#npuB").style.width=npu+"%";
+  $("#tmpV").textContent=tmp.toFixed(1); $("#tmpB").style.width=(tmp/90*100)+"%";
+  $("#rssi").textContent=Math.round(R(-82,-62))+" dBm";
+  $("#thru").textContent=R(1.6,3.4).toFixed(1)+" kbps";
+  $("#qloss").textContent=Math.round(R(0,11))+" pkt / "+R(.1,1.9).toFixed(1)+"%";
+},2200);
+
+/* drone telemetry jitter */
+setInterval(()=>{
+  DRONES.forEach((d,i)=>{
+    if(d.dead) return;
+    d.batt=Math.max(12,d.batt-R(.02,.13));
+    d.alt=Math.max(28,Math.min(96,d.alt+R(-2.2,2.2)));
+    const bf=$("#bf"+i), bv=$("#bv"+i);
+    bf.style.width=d.batt+"%";
+    bf.style.background = d.batt<25?"var(--red)":(d.batt<45?"var(--amber)":"var(--cyan)");
+    bv.innerHTML=d.batt.toFixed(0)+"<small>%</small>";
+    $("#av"+i).innerHTML=d.alt.toFixed(0)+"<small> m AGL</small>";
+    const sats=Math.round(R(11,18));
+    $("#gv"+i).innerHTML=(sats>13?"RTK":"3D-FIX")+"<small> "+sats+" sv</small>";
+    const bars=Math.max(2,Math.round(R(2.6,4.4)));
+    $("#sv"+i).innerHTML=[1,2,3,4].map(n=>`<i class="${n<=bars?"on":""}"></i>`).join("");
+  });
+},1800);
+
+/* cursor readout drifts */
+setInterval(()=>{
+  const x=R(60,940), y=R(40,620), g=toGeo(x,y);
+  $("#ccLat").textContent=g.lat+"° N";
+  $("#ccLon").textContent=g.lon+"° E";
+  $("#ccGrid").textContent=toGrid(x,y);
+  $("#ccEl").textContent=Math.round(R(1802,1948))+" m";
+},3400);
+
+/* packets */
+setInterval(()=>{
+  const r=Math.random();
+  if(r<.45) firePacket(()=>pos[0],()=>pos[1]);
+  else if(r<.75) firePacket(()=>pos[1],()=>pos[2]);
+  else firePacket(()=>pos[2],()=>BASE);
+},1100);
+
+/* hop count flicker */
+setInterval(()=>{$("#hops").textContent=pick([2,3,3,3,4]);},5200);
+
+/* ── scripted event timeline ── */
+HAZARDS.forEach(h=>setTimeout(()=>addHazard(h),h.d));
+SURV.forEach((s,i)=>setTimeout(()=>addSurvivor(s,i),s.d));
+
+/* seed the feed so it never looks empty on load */
+pushAlert("MEDIUM","SYS","Mission armed — 3 airframes launched, mesh formed",{src:"Ground Station"});
+pushAlert("HIGH","MESH","WAN unavailable — falling back to LoRa store-and-forward",{hop:"D1→D2→D3→GS"});
+pushAlert("MEDIUM","SLAM","Occupancy grid initialised from LiDAR sweep",{src:"RTAB-SLAM",grid:"D-4"});
+
+setTimeout(()=>{ setInterval(chatter, 4300); }, 6000);
+
+/* ── the set-piece: D3 drops out, mesh re-routes ── */
+setTimeout(()=>{
+  const d=DRONES[2];
+  d.dead=true;
+  d._g.style.transition="opacity .8s"; d._g.style.opacity=".22";
+  $("#tc2").classList.add("off");
+  $("#md2").textContent="LINK LOST"; $("#md2").style.color="var(--red)";
+  $("#md2").style.borderColor="#ff3d5755"; $("#md2").style.background="#ff3d570d";
+  pushAlert("CRITICAL","MESH","GARUD-03 link lost — terrain shadow at ridge line",{hop:"D3 ✕",src:"LoRa SX1276"});
+  setTimeout(()=>{
+    baseLink.setAttribute("x1",pos[1].x);
+    pushAlert("HIGH","MESH","Route healed — D2 promoted to relay head, 0 packets dropped",{hop:"D1→D2→GS"});
+  },2600);
+  // heal after a while
+  setTimeout(()=>{
+    d.dead=false;
+    d._g.style.opacity="1";
+    $("#tc2").classList.remove("off");
+    $("#md2").textContent="RELAY"; $("#md2").style.color="";
+    $("#md2").style.borderColor=""; $("#md2").style.background="";
+    pushAlert("MEDIUM","MESH","GARUD-03 re-joined mesh — buffered payload flushed (31 pkt)",{hop:"D3→D2→GS"});
+  },16000);
+},46000);
+
+})();
+</script>
